@@ -1,0 +1,124 @@
+[
+  {
+    "domain": "Travel Bookings",
+    "mapping": {
+      "properties": {
+        "booking_id": { "type": "keyword" },
+        "customer_name": { "type": "text" },
+        "destination": { "type": "keyword" },
+        "booking_date": { "type": "date" },
+        "travel_date": { "type": "date" },
+        "price": { "type": "double" },
+        "duration_days": { "type": "integer" },
+        "accommodation_type": { "type": "keyword" },
+        "is_refundable": { "type": "boolean" }
+      }
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find all bookings to Paris in the next 3 months.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": { "term": { "destination": "Paris" } },
+              "filter": { "range": { "travel_date": { "gte": "now/d", "lte": "now+3M/d" } } }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show refundable bookings for beach resorts.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": { "term": { "accommodation_type": "beach resort" } },
+              "filter": { "term": { "is_refundable": true } }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Retail Products",
+    "mapping": {
+      "properties": {
+        "product_id": { "type": "keyword" },
+        "name": { "type": "text" },
+        "category": { "type": "keyword" },
+        "price": { "type": "double" },
+        "stock_quantity": { "type": "integer" },
+        "rating": { "type": "double" },
+        "release_date": { "type": "date" }
+      }
+    },
+    "NLQs": [
+      {
+        "NLQ": "List all electronics with a rating above 4 stars.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": { "term": { "category": "electronics" } },
+              "filter": { "range": { "rating": { "gt": 4 } } }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find new arrivals in the kitchen category that are in stock.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": { "term": { "category": "kitchen" } },
+              "filter": [
+                { "range": { "release_date": { "gte": "now-1M/M" } } },
+                { "range": { "stock_quantity": { "gt": 0 } } }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Academic Publications",
+    "mapping": {
+      "properties": {
+        "publication_id": { "type": "keyword" },
+        "title": { "type": "text" },
+        "author": { "type": "text" },
+        "publication_year": { "type": "integer" },
+        "keywords": { "type": "text" },
+        "citations": { "type": "integer" },
+        "journal": { "type": "keyword" }
+      }
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find all publications on machine learning since 2018 with over 100 citations.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": { "match": { "keywords": "machine learning" } },
+              "filter": [
+                { "range": { "publication_year": { "gte": 2018 } } },
+                { "range": { "citations": { "gt": 100 } } }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show the most cited publications in the Journal of Artificial Intelligence.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": { "term": { "journal": "Journal of Artificial Intelligence" } }
+            }
+          },
+          "sort": [{ "citations": { "order": "desc" } }]
+        }
+      }
+    ]
+  }
+]

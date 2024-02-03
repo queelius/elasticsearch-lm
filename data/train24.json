@@ -1,0 +1,128 @@
+[
+  {
+    "domain": "Subscription Services",
+    "mapping": {
+      "properties": {
+        "subscription_id": { "type": "keyword" },
+        "user_id": { "type": "keyword" },
+        "service_name": { "type": "text" },
+        "start_date": { "type": "date" },
+        "end_date": { "type": "date" },
+        "status": { "type": "keyword" },
+        "monthly_fee": { "type": "double" }
+      }
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find all active subscriptions.",
+        "query": {
+          "query": {
+            "term": { "status": "active" }
+          }
+        }
+      },
+      {
+        "NLQ": "List subscriptions expiring next month.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": { "term": { "status": "active" } },
+              "filter": { "range": { "end_date": { "gte": "now+1M/M", "lte": "now+2M/M" } } }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show subscriptions with a monthly fee over $10.",
+        "query": {
+          "query": {
+            "range": { "monthly_fee": { "gt": 10 } }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Travel Itineraries",
+    "mapping": {
+      "properties": {
+        "itinerary_id": { "type": "keyword" },
+        "traveler_id": { "type": "keyword" },
+        "destinations": { "type": "keyword" },
+        "departure_date": { "type": "date" },
+        "return_date": { "type": "date" },
+        "booking_status": { "type": "keyword" },
+        "total_cost": { "type": "double" }
+      }
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find upcoming itineraries for traveler 12345.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": { "term": { "traveler_id": "12345" } },
+              "filter": { "range": { "departure_date": { "gte": "now/d" } } }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List itineraries to 'Japan' booked this year.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": { "term": { "destinations": "Japan" } },
+              "filter": { "range": { "departure_date": { "gte": "2023-01-01" } } }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Online Courses",
+    "mapping": {
+      "properties": {
+        "course_id": { "type": "keyword" },
+        "title": { "type": "text" },
+        "instructor": { "type": "text" },
+        "category": { "type": "keyword" },
+        "published_date": { "type": "date" },
+        "enrollment_count": { "type": "integer" },
+        "rating": { "type": "double" }
+      }
+    },
+    "NLQs": [
+      {
+        "NLQ": "Show courses in 'Data Science' with high enrollment.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": { "term": { "category": "Data Science" } },
+              "filter": { "range": { "enrollment_count": { "gt": 500 } } }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List all courses published by 'Dr. Jane Doe'.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": { "match": { "instructor": "Dr. Jane Doe" } }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find courses with a rating above 4.5.",
+        "query": {
+          "query": {
+            "range": { "rating": { "gt": 4.5 } }
+          }
+        }
+      }
+    ]
+  }
+]

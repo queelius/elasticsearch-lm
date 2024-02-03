@@ -1,0 +1,33 @@
+{
+  "domain": "Vehicle Sales",
+  "mapping": {
+    "properties": {
+      "vehicle_id": { "type": "keyword" },
+      "make": { "type": "text" },
+      "model": { "type": "text" },
+      "year": { "type": "integer" },
+      "price": { "type": "double" },
+      "mileage": { "type": "integer" },
+      "color": { "type": "keyword" },
+      "available": { "type": "boolean" }
+    }
+  },
+  "NLQs": [
+    {
+      "NLQ": "Find all available red Toyota cars from 2015 or newer under $20,000.",
+      "query": {
+        "query": {
+          "bool": {
+            "must": [
+              { "term": { "make": "Toyota" } },
+              { "term": { "color": "red" } },
+              { "range": { "year": { "gte": 2015 } } },
+              { "range": { "price": { "lte": 20000 } } }
+            ],
+            "filter": { "term": { "available": true } }
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,175 @@
+[
+  {
+    "domain": "Tech Support Tickets",
+    "mapping": {
+      "properties": {
+        "ticket_id": { "type": "keyword" },
+        "subject": { "type": "text" },
+        "description": { "type": "text" },
+        "submission_date": { "type": "date" },
+        "status": { "type": "keyword" },
+        "priority": { "type": "keyword" },
+        "assigned_team": { "type": "keyword" }
+      }
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find all unresolved tickets submitted in the last week.",
+        "query": {
+          "query": {
+            "bool": {
+              "must_not": { "term": { "status": "resolved" } },
+              "filter": { "range": { "submission_date": { "gte": "now-7d/d" } } }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List high priority tickets currently open.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": { "term": { "priority": "high" } },
+              "must_not": { "term": { "status": "resolved" } }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show tickets assigned to the 'networking' team.",
+        "query": {
+          "query": {
+            "term": { "assigned_team": "networking" }
+          }
+        }
+      },
+      {
+        "NLQ": "Find all unresolved tickets submitted in the last week.",
+        "query": {
+          "query": {
+            "bool": {
+              "must_not": { "terms": { "status": ["resolved", "closed"] } },
+              "filter": { "range": { "submission_date": { "gte": "now-1w/w" } } }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Customer Reviews",
+    "mapping": {
+      "properties": {
+        "review_id": { "type": "keyword" },
+        "product_id": { "type": "keyword" },
+        "author": { "type": "text" },
+        "rating": { "type": "integer" },
+        "comment": { "type": "text" },
+        "review_date": { "type": "date" }
+      }
+    },
+    "NLQs": [
+      {
+        "NLQ": "Show all 5-star reviews from the past month.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": { "term": { "rating": 5 } },
+              "filter": { "range": { "review_date": { "gte": "now-1M/M" } } }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List reviews for product 1234.",
+        "query": {
+          "query": {
+            "term": { "product_id": "1234" }
+          }
+        }
+      },
+      {
+        "NLQ": "Find negative comments for product 5678.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": { "term": { "product_id": "5678" } },
+              "filter": { "range": { "rating": { "lt": 3 } } }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show all 5-star reviews from the past month.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": { "match": { "rating": "5" } },
+              "filter": { "range": { "review_date": { "gte": "now-30d/d" } } }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Real Estate Transactions",
+    "mapping": {
+      "properties": {
+        "transaction_id": { "type": "keyword" },
+        "property_id": { "type": "keyword" },
+        "buyer_id": { "type": "keyword" },
+        "seller_id": { "type": "keyword" },
+        "sale_price": { "type": "double" },
+        "sale_date": { "type": "date" },
+        "property_type": { "type": "keyword" },
+        "location": { "type": "text" }
+      }
+    },
+    "NLQs": [
+      {
+        "NLQ": "List all transactions for residential properties over $500,000.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": { "term": { "property_type": "residential" } },
+              "filter": { "range": { "sale_price": { "gt": 500000 } } }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show transactions in 'Downtown' area last year.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": { "match": { "location": "Downtown" } },
+              "filter": { "range": { "sale_date": { "gte": "2022-01-01", "lte": "2022-12-31" } } }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find properties sold by seller 4321.",
+        "query": {
+          "query": {
+            "term": { "seller_id": "4321" }
+          }
+        }
+      },
+      {
+        "NLQ": "List all transactions for residential properties over $500,000.",
+        "query": {
+          "query": {
+            "bool": {
+              "filter": [
+                { "term": { "property_type": "residential" } },
+                { "range": { "sale_price": { "gt": 500000 } } }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  }
+]

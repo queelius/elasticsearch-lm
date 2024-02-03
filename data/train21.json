@@ -1,0 +1,159 @@
+[
+  {
+    "domain": "City Park Events",
+    "mapping": {
+      "properties": {
+        "event_id": { "type": "keyword" },
+        "name": { "type": "text" },
+        "date": { "type": "date" },
+        "type": { "type": "keyword" },
+        "attendees_count": { "type": "integer" },
+        "location": { "type": "text" }
+      }
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find all music events happening next month.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": { "term": { "type": "music" } },
+              "filter": { "range": { "date": { "gte": "now+1M/M", "lte": "now+2M/M" } } }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List upcoming events in Central Park.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": { "match": { "location": "Central Park" } },
+              "filter": { "range": { "date": { "gte": "now/d" } } }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show events with over 500 attendees.",
+        "query": {
+          "query": {
+            "range": { "attendees_count": { "gt": 500 } }
+          }
+        }
+      },
+      {
+        "NLQ": "Find all music events happening next month.",
+        "query": {
+          "query": {
+            "bool": {
+              "filter": [
+                { "term": { "type": "music" } },
+                { "range": { "date": { "gte": "now+1M/M", "lte": "now+2M/M" } } }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Library Book Loans",
+    "mapping": {
+      "properties": {
+        "loan_id": { "type": "keyword" },
+        "book_id": { "type": "keyword" },
+        "user_id": { "type": "keyword" },
+        "loan_date": { "type": "date" },
+        "due_date": { "type": "date" },
+        "return_date": { "type": "date" }
+      }
+    },
+    "NLQs": [
+      {
+        "NLQ": "List all books due next week.",
+        "query": {
+          "query": {
+            "bool": {
+              "filter": { "range": { "due_date": { "gte": "now/w", "lte": "now/w+1w" } } }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show books that were returned late.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "script": {
+                  "script": {
+                    "source": "doc['return_date'].value > doc['due_date'].value",
+                    "lang": "painless"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List all books due next week.",
+        "query": {
+          "query": {
+            "range": { "due_date": { "gte": "now+7d/d", "lte": "now+14d/d" } }
+          }
+        }
+      },
+      {
+        "NLQ": "Show books that were returned late.",
+        "query": {
+          "query": {
+            "bool": {
+              "must_not": { "range": { "return_date": { "lte": "due_date" } } }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Fitness Class Signups",
+    "mapping": {
+      "properties": {
+        "class_id": { "type": "keyword" },
+        "title": { "type": "text" },
+        "instructor": { "type": "text" },
+        "date": { "type": "date" },
+        "capacity": { "type": "integer" },
+        "enrolled": { "type": "integer" }
+      }
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find yoga classes with spots left this week.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": { "match": { "title": "yoga" } },
+              "filter": [
+                { "range": { "date": { "gte": "now/w", "lte": "now/w+1w" } } },
+                { "script": { "script": { "source": "doc['capacity'].value > doc['enrolled'].value", "lang": "painless" } } }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show fitness classes that are fully booked.",
+        "query": {
+          "query": {
+            "bool": {
+              "filter": { "script": { "script": { "source": "doc['enrolled'].value >= doc['capacity'].value", "lang": "painless" } } }
+            }
+          }
+        }
+      }
+    ]
+  }
+]

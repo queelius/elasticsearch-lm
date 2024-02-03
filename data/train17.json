@@ -1,0 +1,33 @@
+{
+  "domain": "Hotel Bookings",
+  "mapping": {
+    "properties": {
+      "booking_id": { "type": "keyword" },
+      "guest_name": { "type": "text" },
+      "room_type": { "type": "keyword" },
+      "check_in_date": { "type": "date" },
+      "check_out_date": { "type": "date" },
+      "price_per_night": { "type": "double" },
+      "total_price": { "type": "double" },
+      "amenities": { "type": "keyword" }
+    }
+  },
+  "NLQs": [
+    {
+      "NLQ": "Find luxury room bookings for more than 5 nights.",
+      "query": {
+        "query": {
+          "bool": {
+            "must": { "term": { "room_type": "luxury" } },
+            "script": {
+              "script": {
+                "source": "ChronoUnit.DAYS.between(doc['check_in_date'].value, doc['check_out_date'].value) > 5",
+                "lang": "painless"
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

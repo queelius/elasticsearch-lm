@@ -1,0 +1,50 @@
+{
+  "domain": "Online Learning Platforms",
+  "mapping": {
+    "properties": {
+      "course_id": { "type": "keyword" },
+      "title": { "type": "text" },
+      "instructor": { "type": "text" },
+      "category": { "type": "keyword" },
+      "enrollment_count": { "type": "integer" },
+      "rating": { "type": "double" },
+      "comments": { "type": "nested",
+                    "properties": {
+                      "comment_id": { "type": "keyword" },
+                      "user_id": { "type": "keyword" },
+                      "text": { "type": "text" },
+                      "date_posted": { "type": "date" }
+                    }
+                  }
+    }
+  },
+  "NLQs": [
+    {
+      "NLQ": "List top-rated courses in the 'Data Science' category.",
+      "query": {
+        "query": {
+          "bool": {
+            "must": { "term": { "category": "Data Science" } }
+          }
+        },
+        "sort": [{ "rating": { "order": "desc" } }],
+        "size": 5
+      }
+    },
+    {
+      "NLQ": "Identify courses with increasing enrollment over the past 3 years.",
+      "query": {
+        "query": {
+          "bool": {
+            "script": {
+              "script": {
+                "source": "/* Script to determine courses with increasing enrollment */",
+                "lang": "painless"
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

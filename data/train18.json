@@ -1,0 +1,28 @@
+{
+  "domain": "Job Applications",
+  "mapping": {
+    "properties": {
+      "application_id": { "type": "keyword" },
+      "applicant_name": { "type": "text" },
+      "position": { "type": "text" },
+      "applied_date": { "type": "date" },
+      "status": { "type": "keyword" },
+      "resume": { "type": "text" },
+      "experience_years": { "type": "integer" },
+      "skills": { "type": "text" }
+    }
+  },
+  "NLQs": [
+    {
+      "NLQ": "Show applications for 'Data Scientist' position received in the last month.",
+      "query": {
+        "query": {
+          "bool": {
+            "must": { "match": { "position": "Data Scientist" } },
+            "filter": { "range": { "applied_date": { "gte": "now-1M/M" } } }
+          }
+        }
+      }
+    }
+  ]
+}

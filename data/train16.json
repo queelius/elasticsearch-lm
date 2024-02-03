@@ -1,0 +1,57 @@
+{
+  "domain": "Fitness Center Memberships",
+  "mapping": {
+    "properties": {
+      "member_id": { "type": "keyword" },
+      "name": { "type": "text" },
+      "membership_start_date": { "type": "date" },
+      "membership_type": { "type": "keyword" },
+      "sessions_attended": { "type": "nested",
+                             "properties": {
+                               "session_id": { "type": "keyword" },
+                               "date": { "type": "date" },
+                               "duration_minutes": { "type": "integer" }
+                             }
+                           },
+      "payment_history": { "type": "nested",
+                           "properties": {
+                             "payment_id": { "type": "keyword" },
+                             "date": { "type": "date" },
+                             "amount": { "type": "double" }
+                           }
+                         }
+    }
+  },
+  "NLQs": [
+    {
+      "NLQ": "Find members with premium membership who attended more than 20 sessions.",
+      "query": {
+        "query": {
+          "bool": {
+            "must": { "term": { "membership_type": "premium" } },
+            "script": {
+              "script": {
+                "source": "doc['sessions_attended'].size() > 20",
+                "lang": "painless"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "NLQ": "Show total payments made by members in the last year.",
+      "query": {
+        "query": {
+          "nested": {
+            "path": "payment_history",
+            "query": { "range": { "payment_history.date": { "gte": "now-1y/y" } } }
+          },
+          "aggs": {
+            "total_payments": { "sum": { "field": "payment_history.amount" } }
+          }
+        }
+      }
+    }
+  ]
+}

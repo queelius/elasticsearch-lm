@@ -1,0 +1,136 @@
+[
+  {
+    "domain": "Gaming Community Posts",
+    "mapping": {
+      "properties": {
+        "post_id": { "type": "keyword" },
+        "author": { "type": "text" },
+        "content": { "type": "text" },
+        "post_date": { "type": "date" },
+        "game_tags": { "type": "keyword" },
+        "likes": { "type": "integer" },
+        "comments": {
+          "type": "nested",
+          "properties": {
+            "comment_id": { "type": "keyword" },
+            "comment_author": { "type": "text" },
+            "comment_content": { "type": "text" },
+            "comment_date": { "type": "date" }
+          }
+        }
+      }
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find all posts tagged 'MMORPG' with more than 100 likes.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": { "term": { "game_tags": "MMORPG" } },
+              "filter": { "range": { "likes": { "gt": 100 } } }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show posts related to 'Cyberpunk' from the last month.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": { "match": { "content": "Cyberpunk" } },
+              "filter": { "range": { "post_date": { "gte": "now-1M/M" } } }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Marketplace Listings",
+    "mapping": {
+      "properties": {
+        "listing_id": { "type": "keyword" },
+        "seller_id": { "type": "keyword" },
+        "item_name": { "type": "text" },
+        "description": { "type": "text" },
+        "price": { "type": "double" },
+        "category": { "type": "keyword" },
+        "listing_date": { "type": "date" },
+        "sold": { "type": "boolean" }
+      }
+    },
+    "NLQs": [
+      {
+        "NLQ": "List all unsold 'antique' items under $200.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": { "term": { "category": "antique" } },
+              "filter": [
+                { "range": { "price": { "lte": 200 } } },
+                { "term": { "sold": false } }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find recently listed 'vintage watches'.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": { "match": { "item_name": "vintage watches" } },
+              "filter": { "range": { "listing_date": { "gte": "now-7d/d" } } }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Public Transport Schedules",
+    "mapping": {
+      "properties": {
+        "schedule_id": { "type": "keyword" },
+        "route_number": { "type": "keyword" },
+        "start_point": { "type": "text" },
+        "end_point": { "type": "text" },
+        "departure_times": { "type": "date" },
+        "arrival_times": { "type": "date" },
+        "frequency_minutes": { "type": "integer" }
+      }
+    },
+    "NLQs": [
+      {
+        "NLQ": "Show the schedule for route 10 this week.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": { "term": { "route_number": "10" } },
+              "filter": [
+                { "range": { "departure_times": { "gte": "now/w", "lte": "now/w+1w" } } }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find routes with departure times early in the morning.",
+        "query": {
+          "query": {
+            "bool": {
+              "filter": {
+                "script": {
+                  "script": {
+                    "source": "doc['departure_times'].value.getHour() < 6",
+                    "lang": "painless"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+]
