@@ -1,0 +1,81 @@
+{
+  "domain": "Healthcare Appointments",
+  "mapping": {
+    "appointment_id": { "type": "keyword" },
+    "patient_name": { "type": "text" },
+    "doctor_name": { "type": "text" },
+    "specialization": { "type": "keyword" },
+    "appointment_date": { "type": "date" },
+    "appointment_type": { "type": "keyword" },
+    "duration_minutes": { "type": "integer" },
+    "cost": { "type": "double" },
+    "insurance_accepted": { "type": "boolean" }
+  },
+  "NLQs": [
+    {
+      "NLQ": "Find next available appointments with Dr. Emily.",
+      "query": {
+        "query": {
+          "bool": {
+            "must": { "match": { "doctor_name": "Dr. Emily" } },
+            "filter": { "range": { "appointment_date": { "gte": "now/d" } } }
+          }
+        },
+        "sort": [{ "appointment_date": { "order": "asc" } }]
+      }
+    },
+    {
+      "NLQ": "Show me all dental appointments that accept insurance.",
+      "query": {
+        "query": {
+          "bool": {
+            "must": { "term": { "specialization": "dental" } },
+            "filter": { "term": { "insurance_accepted": true } }
+          }
+        }
+      }
+    },
+    {
+      "NLQ": "List all appointments under $100 in the next 30 days.",
+      "query": {
+        "query": {
+          "bool": {
+            "filter": [
+              { "range": { "cost": { "lt": 100 } } },
+              { "range": { "appointment_date": { "gte": "now/d", "lte": "now+30d/d" } } }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "NLQ": "Find appointments for physical therapy longer than 60 minutes.",
+      "query": {
+        "query": {
+          "bool": {
+            "must": { "term": { "specialization": "physical therapy" } },
+            "filter": { "range": { "duration_minutes": { "gt": 60 } } }
+          }
+        }
+      }
+    },
+    {
+      "NLQ": "Which cardiologists have appointments available this week?",
+      "query": {
+        "query": {
+          "bool": {
+            "must": { "term": { "specialization": "cardiology" } },
+            "filter": {
+              "range": {
+                "appointment_date": {
+                  "gte": "now/w",
+                  "lte": "now/w+1w"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

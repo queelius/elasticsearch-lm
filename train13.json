@@ -1,0 +1,56 @@
+{
+  "domain": "E-commerce Transactions",
+  "mapping": {
+    "properties": {
+      "transaction_id": { "type": "keyword" },
+      "customer_id": { "type": "keyword" },
+      "product_id": { "type": "keyword" },
+      "purchase_date": { "type": "date" },
+      "quantity": { "type": "integer" },
+      "price": { "type": "double" },
+      "payment_method": { "type": "keyword" },
+      "shipping": {
+        "type": "object",
+        "properties": {
+          "address": { "type": "text" },
+          "city": { "type": "keyword" },
+          "state": { "type": "keyword" },
+          "estimated_delivery_date": { "type": "date" }
+        }
+      }
+    }
+  },
+  "NLQs": [
+    {
+      "NLQ": "Show transactions made by customer 12345 using credit card.",
+      "query": {
+        "query": {
+          "bool": {
+            "must": [
+              { "term": { "customer_id": "12345" } },
+              { "term": { "payment_method": "credit card" } }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "NLQ": "List all purchases in New York state last month.",
+      "query": {
+        "query": {
+          "bool": {
+            "must": { "term": { "shipping.state": "New York" } },
+            "filter": {
+              "range": {
+                "purchase_date": {
+                  "gte": "now-1M/M",
+                  "lte": "now/M"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

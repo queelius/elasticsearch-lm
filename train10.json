@@ -1,0 +1,156 @@
+[
+  {
+    "domain": "Event Management",
+    "mapping": {
+      "properties": {
+        "event_id": { "type": "keyword" },
+        "title": { "type": "text" },
+        "organizer": { "type": "text" },
+        "date": { "type": "date" },
+        "location": { "type": "keyword" },
+        "attendees": { "type": "integer" },
+        "topics": { "type": "keyword" }
+      }
+    },
+    "NLQs": [
+      {
+        "NLQ": "List upcoming tech events with more than 100 attendees.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": [
+                { "term": { "topics": "tech" } },
+                { "range": { "attendees": { "gt": 100 } } },
+                { "range": { "date": { "gte": "now/d" } } }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find events organized by 'Global Tech' in 'New York'.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": [
+                { "match": { "organizer": "Global Tech" } },
+                { "term": { "location": "New York" } }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Academic Courses",
+    "mapping": {
+      "properties": {
+        "course_id": { "type": "keyword" },
+        "name": { "type": "text" },
+        "department": { "type": "keyword" },
+        "credits": { "type": "integer" },
+        "instructor": { "type": "text" },
+        "semester": { "type": "keyword" },
+        "enrollment": { "type": "nested",
+                        "properties": {
+                          "student_id": { "type": "keyword" },
+                          "grade": { "type": "keyword" }
+                        }
+                      }
+      }
+    },
+    "NLQs": [
+      {
+        "NLQ": "Show all computer science courses available in the fall semester.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": [
+                { "term": { "department": "computer science" } },
+                { "term": { "semester": "fall" } }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find courses taught by 'Dr. Johnson' with more than 50 students enrolled.",
+        "query": {
+          "script": {
+            "script": {
+              "source": "doc['enrollment'].size() > 50",
+              "lang": "painless"
+            }
+          },
+          "query": {
+            "bool": {
+              "must": { "match": { "instructor": "Dr. Johnson" } }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Health Records",
+    "mapping": {
+      "properties": {
+        "patient_id": { "type": "keyword" },
+        "name": { "type": "text" },
+        "age": { "type": "integer" },
+        "visits": { "type": "nested",
+                    "properties": {
+                      "visit_id": { "type": "keyword" },
+                      "date": { "type": "date" },
+                      "reason": { "type": "text" },
+                      "diagnosis": { "type": "text" }
+                    }
+                  },
+        "medications": { "type": "nested",
+                         "properties": {
+                           "name": { "type": "text" },
+                           "prescribed_date": { "type": "date" },
+                           "dosage": { "type": "text" }
+                         }
+                       }
+      }
+    },
+    "NLQs": [
+      {
+        "NLQ": "Retrieve patient records with visits due to 'cardiac issues' in the last year.",
+        "query": {
+          "query": {
+            "nested": {
+              "path": "visits",
+              "query": {
+                "bool": {
+                  "must": [
+                    { "match": { "visits.reason": "cardiac issues" } },
+                    { "range": { "visits.date": { "gte": "now-1y/y" } } }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List all patients over 60 with diabetes medications.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": { "range": { "age": { "gt": 60 } } },
+              "should": {
+                "nested": {
+                  "path": "medications",
+                  "query": { "match": { "medications.name": "diabetes" } }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+]

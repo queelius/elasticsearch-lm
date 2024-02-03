@@ -1,0 +1,38 @@
+{
+  "domain": "Workplace Surveys",
+  "mapping": {
+    "properties": {
+      "survey_id": { "type": "keyword" },
+      "employee_id": { "type": "keyword" },
+      "date": { "type": "date" },
+      "responses": {
+        "type": "nested",
+        "properties": {
+          "question_id": { "type": "keyword" },
+          "response": { "type": "text" },
+          "rating": { "type": "integer" }
+        }
+      }
+    }
+  },
+  "NLQs": [
+    {
+      "NLQ": "Find surveys with a rating below 3 for question 10.",
+      "query": {
+        "query": {
+          "nested": {
+            "path": "responses",
+            "query": {
+              "bool": {
+                "must": [
+                  { "term": { "responses.question_id": "10" } },
+                  { "range": { "responses.rating": { "lt": 3 } } }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

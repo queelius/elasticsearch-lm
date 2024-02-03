@@ -1,0 +1,41 @@
+{
+  "domain": "Technology Product Reviews",
+  "mapping": {
+    "properties": {
+      "product_id": { "type": "keyword" },
+      "name": { "type": "text" },
+      "category": { "type": "keyword" },
+      "release_date": { "type": "date" },
+      "price": { "type": "double" },
+      "reviews": {
+        "type": "nested",
+        "properties": {
+          "review_id": { "type": "keyword" },
+          "author": { "type": "text" },
+          "rating": { "type": "double" },
+          "content": { "type": "text" },
+          "review_date": { "type": "date" }
+        }
+      }
+    }
+  },
+  "NLQs": [
+    {
+      "NLQ": "Find products in the 'smartphone' category with an average rating above 4.",
+      "query": {
+        "query": {
+          "bool": {
+            "must": { "term": { "category": "smartphone" } },
+            "should": {
+              "nested": {
+                "path": "reviews",
+                "query": { "range": { "reviews.rating": { "gt": 4 } } },
+                "inner_hits": { "size": 5 }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+{
+  "domain": "Employee Performance Reviews",
+  "mapping": {
+    "properties": {
+      "employee_id": { "type": "keyword" },
+      "name": { "type": "text" },
+      "department": { "type": "keyword" },
+      "review": {
+        "type": "nested",
+        "properties": {
+          "year": { "type": "integer" },
+          "rating": { "type": "double" },
+          "feedback": { "type": "text" },
+          "goals": {
+            "type": "nested",
+            "properties": {
+              "goal_description": { "type": "text" },
+              "completion_status": { "type": "boolean" }
+            }
+          }
+        }
+      },
+      "salary_history": {
+        "type": "nested",
+        "properties": {
+          "year": { "type": "integer" },
+          "salary": { "type": "double" }
+        }
+      }
+    }
+  },
+  "NLQs": [
+    {
+      "NLQ": "Find employees with an average rating above 4.5 in the last 3 years.",
+      "query": {
+        "query": {
+          "nested": {
+            "path": "review",
+            "query": {
+              "bool": {
+                "must": [
+                  { "range": { "review.year": { "gte": "now-3y/y" } } }
+                ],
+                "filter": { "range": { "review.rating": { "gt": 4.5 } } }
+              }
+            },
+            "inner_hits": {
+              "size": 3,
+              "sort": [{ "review.year": "desc" }]
+            }
+          }
+        }
+      }
+    },
+    {
+      "NLQ": "Show the salary growth of employees in the IT department since 2018.",
+      "query": {
+        "query": {
+          "bool": {
+            "must": { "term": { "department": "IT" } }
+          }
+        },
+        "nested": {
+          "path": "salary_history",
+          "query": {
+            "range": { "salary_history.year": { "gte": 2018 } }
+          },
+          "inner_hits": {
+            "sort": [{ "salary_history.year": "asc" }]
+          }
+        }
+      }
+    },
+    {
+      "NLQ": "Identify employees who have not met all their goals in the previous year.",
+      "query": {
+        "query": {
+          "nested": {
+            "path": "review",
+            "query": {
+              "bool": {
+                "must": [
+                  { "term": { "review.year": "now-1y/y" } },
+                  { "nested": {
+                    "path": "review.goals",
+                    "query": {
+                      "term": { "review.goals.completion_status": false }
+                    }
+                  }}
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "NLQ": "List all feedback for employees in the marketing department with ratings below 3.",
+      "query": {
+        "query": {
+          "bool": {
+            "must": { "term": { "department": "marketing" } }
+          }
+        },
+        "nested": {
+          "path": "review",
+          "query": {
+            "range": { "review.rating": { "lt": 3 } }
+          },
+          "inner_hits": {}
+        }
+      }
+    },
+    {
+      "NLQ": "Find employees who have consistently received salary increases each year.",
+      "query": {
+        "query": {
+          "bool": {
+            "must": {
+              "nested": {
+                "path": "salary_history",
+                "query": {
+                  "script_score": {
+                    "query": { "match_all": {} },
+                    "script": {
+                      "source": "/* script to calculate consistent salary increases */"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

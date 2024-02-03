@@ -1,0 +1,29 @@
+{
+  "domain": "Local Library Catalog",
+  "mapping": {
+    "properties": {
+      "book_id": { "type": "keyword" },
+      "title": { "type": "text" },
+      "author": { "type": "text" },
+      "publication_year": { "type": "date" },
+      "genres": { "type": "keyword" },
+      "availability": { "type": "boolean" }
+    }
+  },
+  "NLQs": [
+    {
+      "NLQ": "Find available mystery books published before 2000.",
+      "query": {
+        "query": {
+          "bool": {
+            "must": { "term": { "genres": "mystery" } },
+            "filter": [
+              { "range": { "publication_year": { "lt": "2000-01-01" } } },
+              { "term": { "availability": true } }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

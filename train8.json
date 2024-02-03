@@ -1,0 +1,27 @@
+{
+  "domain": "Restaurant Reservations",
+  "mapping": {
+    "properties": {
+      "reservation_id": { "type": "keyword" },
+      "customer_name": { "type": "text" },
+      "restaurant_name": { "type": "text" },
+      "reservation_date": { "type": "date" },
+      "party_size": { "type": "integer" },
+      "special_requests": { "type": "text" },
+      "status": { "type": "keyword" }
+    }
+  },
+  "NLQs": [
+    {
+      "NLQ": "Show all upcoming reservations for parties larger than 4.",
+      "query": {
+        "query": {
+          "bool": {
+            "must": { "range": { "party_size": { "gt": 4 } } },
+            "filter": { "range": { "reservation_date": { "gte": "now/d" } } }
+          }
+        }
+      }
+    }
+  ]
+}

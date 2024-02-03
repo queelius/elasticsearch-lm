@@ -1,0 +1,35 @@
+{
+  "domain": "University Enrollment",
+  "mapping": {
+    "properties": {
+      "student_id": { "type": "keyword" },
+      "name": { "type": "text" },
+      "enrollment_year": { "type": "integer" },
+      "major": { "type": "keyword" },
+      "courses": {
+        "type": "nested",
+        "properties": {
+          "course_id": { "type": "keyword" },
+          "grade": { "type": "keyword" }
+        }
+      },
+      "scholarship": { "type": "boolean" }
+    }
+  },
+  "NLQs": [
+    {
+      "NLQ": "List students majoring in Computer Science enrolled after 2018 with a scholarship.",
+      "query": {
+        "query": {
+          "bool": {
+            "must": [
+              { "term": { "major": "Computer Science" } },
+              { "range": { "enrollment_year": { "gt": 2018 } } },
+              { "term": { "scholarship": true } }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

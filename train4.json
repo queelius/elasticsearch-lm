@@ -1,0 +1,80 @@
+{
+  "mapping": {
+    "properties": {
+      "employee_id": { "type": "keyword" },
+      "name": { "type": "text" },
+      "department": { "type": "keyword" },
+      "position": { "type": "text" },
+      "salary": { "type": "double" },
+      "hire_date": { "type": "date" },
+      "location": { "type": "keyword" },
+      "skills": { "type": "text" }
+    }
+  },
+  "NLQs": [
+    {
+      "NLQ": "Find all engineers in the software department.",
+      "query": {
+        "query": {
+          "bool": {
+            "must": [
+              { "match": { "position": "engineer" } },
+              { "term": { "department": "software" } }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "NLQ": "Who was hired in the last year with a salary over 100000?",
+      "query": {
+        "query": {
+          "bool": {
+            "must": { "range": { "hire_date": { "gte": "now-1y" } } },
+            "filter": { "range": { "salary": { "gt": 100000 } } }
+          }
+        }
+      }
+    },
+    {
+      "NLQ": "List employees in New York or San Francisco with Python skills.",
+      "query": {
+        "query": {
+          "bool": {
+            "should": [
+              { "term": { "location": "New York" } },
+              { "term": { "location": "San Francisco" } }
+            ],
+            "must": { "match": { "skills": "Python" } },
+            "minimum_should_match": 1
+          }
+        }
+      }
+    },
+    {
+      "NLQ": "Show top 5 highest earning project managers.",
+      "query": {
+        "query": {
+          "bool": {
+            "must": { "match": { "position": "project manager" } }
+          }
+        },
+        "size": 5,
+        "sort": [{ "salary": { "order": "desc" } }]
+      }
+    },
+    {
+      "NLQ": "Find employees who joined before 2015 but still earn less than 60000.",
+      "query": {
+        "query": {
+          "bool": {
+            "filter": [
+              { "range": { "hire_date": { "lt": "2015-01-01" } } },
+              { "range": { "salary": { "lt": 60000 } } }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}
