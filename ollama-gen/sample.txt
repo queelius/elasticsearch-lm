@@ -1,0 +1,75 @@
+Here are some examples:
+```json
+[
+  {
+    "domain": "Customer Service Inquiries",
+    "mapping": {
+      "properties": {
+        "inquiry_id": {
+          "type": "keyword"
+        },
+        "customer_id": {
+          "type": "keyword"
+        },
+        "inquiry_date": {
+          "type": "date"
+        },
+        "category": {
+          "type": "keyword"
+        },
+        "status": {
+          "type": "keyword"
+        },
+        "resolution_date": {
+          "type": "date"
+        }
+      },
+      "_meta": "Customer Service Inquiries"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find unresolved inquiries in the 'billing' category.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "category": "billing"
+                }
+              },
+              "must_not": {
+                "term": {
+                  "status": "resolved"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List all inquiries resolved within the last month.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "status": "resolved"
+                }
+              },
+              "filter": {
+                "range": {
+                  "resolution_date": {
+                    "gte": "now-1M/M"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+]
+```
+Please generate more synthetic data based on these examples.
+Hoewver, feel free to modify the examples as you see fit.
