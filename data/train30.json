@@ -1,0 +1,239 @@
+[
+  {
+    "domain": "Pet Adoption Records",
+    "mapping": {
+      "properties": {
+        "record_id": {
+          "type": "keyword"
+        },
+        "pet_name": {
+          "type": "text"
+        },
+        "species": {
+          "type": "keyword"
+        },
+        "breed": {
+          "type": "text"
+        },
+        "age_years": {
+          "type": "integer"
+        },
+        "adoption_date": {
+          "type": "date"
+        },
+        "status": {
+          "type": "keyword"
+        }
+      },
+      "_meta": "Pet Adoption Records"
+    },
+    "NLQs": [
+      {
+        "NLQ": "List all adopted dogs.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "species": "dog"
+                }
+              },
+              "filter": {
+                "term": {
+                  "status": "adopted"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find pets adopted in the last month.",
+        "query": {
+          "query": {
+            "range": {
+              "adoption_date": {
+                "gte": "now-1M/M"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Vehicle Rental Agreements",
+    "mapping": {
+      "properties": {
+        "agreement_id": {
+          "type": "keyword"
+        },
+        "customer_id": {
+          "type": "keyword"
+        },
+        "vehicle_id": {
+          "type": "keyword"
+        },
+        "start_date": {
+          "type": "date"
+        },
+        "end_date": {
+          "type": "date"
+        },
+        "daily_rate": {
+          "type": "double"
+        },
+        "total_cost": {
+          "type": "double"
+        },
+        "status": {
+          "type": "keyword"
+        }
+      },
+      "_meta": "Vehicle Rental Agreements"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Show active rentals over $300.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "status": "active"
+                }
+              },
+              "filter": {
+                "range": {
+                  "total_cost": {
+                    "gt": 300
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List all rentals starting next week.",
+        "query": {
+          "query": {
+            "range": {
+              "start_date": {
+                "gte": "now+1w/w",
+                "lte": "now+2w/w"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Online Course Enrollments",
+    "mapping": {
+      "properties": {
+        "enrollment_id": {
+          "type": "keyword"
+        },
+        "course_id": {
+          "type": "keyword"
+        },
+        "student_id": {
+          "type": "keyword"
+        },
+        "enrollment_date": {
+          "type": "date"
+        },
+        "completion_date": {
+          "type": "date"
+        },
+        "status": {
+          "type": "keyword"
+        },
+        "final_grade": {
+          "type": "keyword"
+        }
+      },
+      "_meta": "Online Course Enrollments"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find completed courses with grade 'A'.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "status": "completed"
+                }
+              },
+              "filter": {
+                "term": {
+                  "final_grade": "A"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List enrollments from the past year.",
+        "query": {
+          "query": {
+            "range": {
+              "enrollment_date": {
+                "gte": "now-1y/y"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Public Event Registrations",
+    "mapping": {
+      "properties": {
+        "registration_id": {
+          "type": "keyword"
+        },
+        "event_id": {
+          "type": "keyword"
+        },
+        "attendee_id": {
+          "type": "keyword"
+        },
+        "registration_date": {
+          "type": "date"
+        },
+        "status": {
+          "type": "keyword"
+        }
+      },
+      "_meta": "Public Event Registrations"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Show registrations for event 4567.",
+        "query": {
+          "query": {
+            "term": {
+              "event_id": "4567"
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find all cancelled event registrations.",
+        "query": {
+          "query": {
+            "term": {
+              "status": "cancelled"
+            }
+          }
+        }
+      }
+    ]
+  }
+]

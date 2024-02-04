@@ -1,0 +1,184 @@
+[
+  {
+    "domain": "Pet Adoption",
+    "mapping": {
+      "_meta": {
+        "description": "Pet Adoption Records",
+        "version": "1.0"
+      },
+      "properties": {
+        "record_id": {
+          "type": "keyword"
+        },
+        "pet_name": {
+          "type": "text"
+        },
+        "species": {
+          "type": "keyword"
+        },
+        "breed": {
+          "type": "text"
+        },
+        "age_years": {
+          "type": "integer"
+        },
+        "adoption_date": {
+          "type": "date"
+        },
+        "status": {
+          "type": "keyword"
+        }
+      }
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find all adopted cats.",
+        "query": {
+          "bool": {
+            "must": {
+              "match": {
+                "species": "cat"
+              }
+            },
+            "filter": {
+              "term": {
+                "status": "adopted"
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List pets adopted in the last year.",
+        "query": {
+          "range": {
+            "adoption_date": {
+              "gte": "now-1y/y"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Online Retail",
+    "mapping": {
+      "_meta": {
+        "description": "Online Retail Transactions",
+        "version": "1.0"
+      },
+      "properties": {
+        "transaction_id": {
+          "type": "keyword"
+        },
+        "customer_id": {
+          "type": "keyword"
+        },
+        "product_ids": {
+          "type": "keyword"
+        },
+        "transaction_date": {
+          "type": "date"
+        },
+        "total_amount": {
+          "type": "double"
+        },
+        "payment_method": {
+          "type": "keyword"
+        },
+        "status": {
+          "type": "keyword"
+        }
+      }
+    },
+    "NLQs": [
+      {
+        "NLQ": "Show transactions paid by credit card.",
+        "query": {
+          "bool": {
+            "must": {
+              "match": {
+                "payment_method": "credit card"
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find transactions over $1000.",
+        "query": {
+          "range": {
+            "total_amount": {
+              "gt": 1000
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Employee Attendance",
+    "mapping": {
+      "_meta": {
+        "description": "Employee Attendance Records",
+        "version": "1.0"
+      },
+      "properties": {
+        "employee_id": {
+          "type": "keyword"
+        },
+        "date": {
+          "type": "date"
+        },
+        "status": {
+          "type": "keyword"
+        },
+        "notes": {
+          "type": "text"
+        }
+      }
+    },
+    "NLQs": [
+      {
+        "NLQ": "List all absences this month.",
+        "query": {
+          "bool": {
+            "must": {
+              "match": {
+                "status": "absent"
+              }
+            },
+            "filter": {
+              "range": {
+                "date": {
+                  "gte": "now/M",
+                  "lte": "now/M+1M"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show late arrivals last week.",
+        "query": {
+          "bool": {
+            "must": {
+              "match": {
+                "status": "late"
+              }
+            },
+            "filter": {
+              "range": {
+                "date": {
+                  "gte": "now-1w/w",
+                  "lte": "now/w"
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+]

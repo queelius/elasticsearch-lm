@@ -1,0 +1,270 @@
+[
+  {
+    "domain": "Bookstore Inventory",
+    "mapping": {
+      "properties": {
+        "book_id": {
+          "type": "keyword"
+        },
+        "title": {
+          "type": "text"
+        },
+        "author": {
+          "type": "text"
+        },
+        "genre": {
+          "type": "keyword"
+        },
+        "publication_year": {
+          "type": "date"
+        },
+        "price": {
+          "type": "double"
+        },
+        "stock_quantity": {
+          "type": "integer"
+        }
+      },
+      "_meta": "Bookstore Inventory"
+    },
+    "NLQs": [
+      {
+        "NLQ": "List all science fiction books published after 2010.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "genre": "science fiction"
+                }
+              },
+              "filter": {
+                "range": {
+                  "publication_year": {
+                    "gte": "2010-01-01"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find books by 'George Orwell'.",
+        "query": {
+          "query": {
+            "match": {
+              "author": "George Orwell"
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show books under $20.",
+        "query": {
+          "query": {
+            "range": {
+              "price": {
+                "lte": 20
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Restaurant Reviews",
+    "mapping": {
+      "properties": {
+        "review_id": {
+          "type": "keyword"
+        },
+        "restaurant_id": {
+          "type": "keyword"
+        },
+        "reviewer_name": {
+          "type": "text"
+        },
+        "rating": {
+          "type": "integer"
+        },
+        "comment": {
+          "type": "text"
+        },
+        "visit_date": {
+          "type": "date"
+        }
+      },
+      "_meta": "Restaurant Reviews"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find all reviews with a rating of 5 for restaurant 123.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "restaurant_id": "123"
+                }
+              },
+              "filter": {
+                "term": {
+                  "rating": 5
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show recent reviews from the last month.",
+        "query": {
+          "query": {
+            "range": {
+              "visit_date": {
+                "gte": "now-1M/M"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Job Postings",
+    "mapping": {
+      "properties": {
+        "job_id": {
+          "type": "keyword"
+        },
+        "title": {
+          "type": "text"
+        },
+        "description": {
+          "type": "text"
+        },
+        "location": {
+          "type": "keyword"
+        },
+        "company": {
+          "type": "text"
+        },
+        "posted_date": {
+          "type": "date"
+        },
+        "application_deadline": {
+          "type": "date"
+        }
+      },
+      "_meta": "Job Postings"
+    },
+    "NLQs": [
+      {
+        "NLQ": "List all remote job postings in the tech industry.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "match": {
+                  "description": "tech"
+                }
+              },
+              "filter": {
+                "term": {
+                  "location": "remote"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find job postings by 'Acme Corp'.",
+        "query": {
+          "query": {
+            "match": {
+              "company": "Acme Corp"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Flight Bookings",
+    "mapping": {
+      "properties": {
+        "booking_id": {
+          "type": "keyword"
+        },
+        "customer_id": {
+          "type": "keyword"
+        },
+        "flight_number": {
+          "type": "keyword"
+        },
+        "departure_airport": {
+          "type": "keyword"
+        },
+        "arrival_airport": {
+          "type": "keyword"
+        },
+        "departure_time": {
+          "type": "date"
+        },
+        "arrival_time": {
+          "type": "date"
+        },
+        "price": {
+          "type": "double"
+        },
+        "status": {
+          "type": "keyword"
+        }
+      },
+      "_meta": "Flight Bookings"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Show all upcoming flights from JFK to LAX.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": [
+                {
+                  "term": {
+                    "departure_airport": "JFK"
+                  }
+                },
+                {
+                  "term": {
+                    "arrival_airport": "LAX"
+                  }
+                }
+              ],
+              "filter": {
+                "range": {
+                  "departure_time": {
+                    "gte": "now/d"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find cancelled flight bookings.",
+        "query": {
+          "query": {
+            "term": {
+              "status": "cancelled"
+            }
+          }
+        }
+      }
+    ]
+  }
+]

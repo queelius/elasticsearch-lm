@@ -3,16 +3,35 @@
     "domain": "Travel Bookings",
     "mapping": {
       "properties": {
-        "booking_id": { "type": "keyword" },
-        "customer_name": { "type": "text" },
-        "destination": { "type": "keyword" },
-        "booking_date": { "type": "date" },
-        "travel_date": { "type": "date" },
-        "price": { "type": "double" },
-        "duration_days": { "type": "integer" },
-        "accommodation_type": { "type": "keyword" },
-        "is_refundable": { "type": "boolean" }
-      }
+        "booking_id": {
+          "type": "keyword"
+        },
+        "customer_name": {
+          "type": "text"
+        },
+        "destination": {
+          "type": "keyword"
+        },
+        "booking_date": {
+          "type": "date"
+        },
+        "travel_date": {
+          "type": "date"
+        },
+        "price": {
+          "type": "double"
+        },
+        "duration_days": {
+          "type": "integer"
+        },
+        "accommodation_type": {
+          "type": "keyword"
+        },
+        "is_refundable": {
+          "type": "boolean"
+        }
+      },
+      "_meta": "Travel Bookings"
     },
     "NLQs": [
       {
@@ -20,8 +39,19 @@
         "query": {
           "query": {
             "bool": {
-              "must": { "term": { "destination": "Paris" } },
-              "filter": { "range": { "travel_date": { "gte": "now/d", "lte": "now+3M/d" } } }
+              "must": {
+                "term": {
+                  "destination": "Paris"
+                }
+              },
+              "filter": {
+                "range": {
+                  "travel_date": {
+                    "gte": "now/d",
+                    "lte": "now+3M/d"
+                  }
+                }
+              }
             }
           }
         }
@@ -31,8 +61,16 @@
         "query": {
           "query": {
             "bool": {
-              "must": { "term": { "accommodation_type": "beach resort" } },
-              "filter": { "term": { "is_refundable": true } }
+              "must": {
+                "term": {
+                  "accommodation_type": "beach resort"
+                }
+              },
+              "filter": {
+                "term": {
+                  "is_refundable": true
+                }
+              }
             }
           }
         }
@@ -43,14 +81,29 @@
     "domain": "Retail Products",
     "mapping": {
       "properties": {
-        "product_id": { "type": "keyword" },
-        "name": { "type": "text" },
-        "category": { "type": "keyword" },
-        "price": { "type": "double" },
-        "stock_quantity": { "type": "integer" },
-        "rating": { "type": "double" },
-        "release_date": { "type": "date" }
-      }
+        "product_id": {
+          "type": "keyword"
+        },
+        "name": {
+          "type": "text"
+        },
+        "category": {
+          "type": "keyword"
+        },
+        "price": {
+          "type": "double"
+        },
+        "stock_quantity": {
+          "type": "integer"
+        },
+        "rating": {
+          "type": "double"
+        },
+        "release_date": {
+          "type": "date"
+        }
+      },
+      "_meta": "Retail Products"
     },
     "NLQs": [
       {
@@ -58,8 +111,18 @@
         "query": {
           "query": {
             "bool": {
-              "must": { "term": { "category": "electronics" } },
-              "filter": { "range": { "rating": { "gt": 4 } } }
+              "must": {
+                "term": {
+                  "category": "electronics"
+                }
+              },
+              "filter": {
+                "range": {
+                  "rating": {
+                    "gt": 4
+                  }
+                }
+              }
             }
           }
         }
@@ -69,10 +132,26 @@
         "query": {
           "query": {
             "bool": {
-              "must": { "term": { "category": "kitchen" } },
+              "must": {
+                "term": {
+                  "category": "kitchen"
+                }
+              },
               "filter": [
-                { "range": { "release_date": { "gte": "now-1M/M" } } },
-                { "range": { "stock_quantity": { "gt": 0 } } }
+                {
+                  "range": {
+                    "release_date": {
+                      "gte": "now-1M/M"
+                    }
+                  }
+                },
+                {
+                  "range": {
+                    "stock_quantity": {
+                      "gt": 0
+                    }
+                  }
+                }
               ]
             }
           }
@@ -84,14 +163,29 @@
     "domain": "Academic Publications",
     "mapping": {
       "properties": {
-        "publication_id": { "type": "keyword" },
-        "title": { "type": "text" },
-        "author": { "type": "text" },
-        "publication_year": { "type": "integer" },
-        "keywords": { "type": "text" },
-        "citations": { "type": "integer" },
-        "journal": { "type": "keyword" }
-      }
+        "publication_id": {
+          "type": "keyword"
+        },
+        "title": {
+          "type": "text"
+        },
+        "author": {
+          "type": "text"
+        },
+        "publication_year": {
+          "type": "integer"
+        },
+        "keywords": {
+          "type": "text"
+        },
+        "citations": {
+          "type": "integer"
+        },
+        "journal": {
+          "type": "keyword"
+        }
+      },
+      "_meta": "Academic Publications"
     },
     "NLQs": [
       {
@@ -99,10 +193,26 @@
         "query": {
           "query": {
             "bool": {
-              "must": { "match": { "keywords": "machine learning" } },
+              "must": {
+                "match": {
+                  "keywords": "machine learning"
+                }
+              },
               "filter": [
-                { "range": { "publication_year": { "gte": 2018 } } },
-                { "range": { "citations": { "gt": 100 } } }
+                {
+                  "range": {
+                    "publication_year": {
+                      "gte": 2018
+                    }
+                  }
+                },
+                {
+                  "range": {
+                    "citations": {
+                      "gt": 100
+                    }
+                  }
+                }
               ]
             }
           }
@@ -113,10 +223,20 @@
         "query": {
           "query": {
             "bool": {
-              "must": { "term": { "journal": "Journal of Artificial Intelligence" } }
+              "must": {
+                "term": {
+                  "journal": "Journal of Artificial Intelligence"
+                }
+              }
             }
           },
-          "sort": [{ "citations": { "order": "desc" } }]
+          "sort": [
+            {
+              "citations": {
+                "order": "desc"
+              }
+            }
+          ]
         }
       }
     ]

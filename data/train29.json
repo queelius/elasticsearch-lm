@@ -1,0 +1,282 @@
+[
+  {
+    "domain": "Fitness Activity Tracking",
+    "mapping": {
+      "properties": {
+        "activity_id": {
+          "type": "keyword"
+        },
+        "user_id": {
+          "type": "keyword"
+        },
+        "activity_type": {
+          "type": "keyword"
+        },
+        "duration_minutes": {
+          "type": "integer"
+        },
+        "calories_burned": {
+          "type": "double"
+        },
+        "activity_date": {
+          "type": "date"
+        }
+      },
+      "_meta": "Fitness Activity Tracking"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Show all running activities longer than 30 minutes.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "activity_type": "running"
+                }
+              },
+              "filter": {
+                "range": {
+                  "duration_minutes": {
+                    "gt": 30
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find activities with more than 500 calories burned last week.",
+        "query": {
+          "query": {
+            "bool": {
+              "filter": [
+                {
+                  "range": {
+                    "calories_burned": {
+                      "gt": 500
+                    }
+                  }
+                },
+                {
+                  "range": {
+                    "activity_date": {
+                      "gte": "now-7d/d",
+                      "lte": "now/d"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Public Library Catalog",
+    "mapping": {
+      "properties": {
+        "book_id": {
+          "type": "keyword"
+        },
+        "title": {
+          "type": "text"
+        },
+        "author": {
+          "type": "text"
+        },
+        "publication_year": {
+          "type": "integer"
+        },
+        "genres": {
+          "type": "keyword"
+        },
+        "availability": {
+          "type": "boolean"
+        }
+      },
+      "_meta": "Public Library Catalog"
+    },
+    "NLQs": [
+      {
+        "NLQ": "List all available novels by 'Margaret Atwood'.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": [
+                {
+                  "match": {
+                    "author": "Margaret Atwood"
+                  }
+                },
+                {
+                  "term": {
+                    "genres": "novel"
+                  }
+                }
+              ],
+              "filter": {
+                "term": {
+                  "availability": true
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show books published before 1980.",
+        "query": {
+          "query": {
+            "range": {
+              "publication_year": {
+                "lt": 1980
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Customer Service Inquiries",
+    "mapping": {
+      "properties": {
+        "inquiry_id": {
+          "type": "keyword"
+        },
+        "customer_id": {
+          "type": "keyword"
+        },
+        "inquiry_date": {
+          "type": "date"
+        },
+        "category": {
+          "type": "keyword"
+        },
+        "status": {
+          "type": "keyword"
+        },
+        "resolution_date": {
+          "type": "date"
+        }
+      },
+      "_meta": "Customer Service Inquiries"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find unresolved inquiries in the 'billing' category.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "category": "billing"
+                }
+              },
+              "must_not": {
+                "term": {
+                  "status": "resolved"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List all inquiries resolved within the last month.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "status": "resolved"
+                }
+              },
+              "filter": {
+                "range": {
+                  "resolution_date": {
+                    "gte": "now-1M/M"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Real Estate Listings",
+    "mapping": {
+      "properties": {
+        "listing_id": {
+          "type": "keyword"
+        },
+        "address": {
+          "type": "text"
+        },
+        "listing_date": {
+          "type": "date"
+        },
+        "price": {
+          "type": "double"
+        },
+        "bedrooms": {
+          "type": "integer"
+        },
+        "bathrooms": {
+          "type": "integer"
+        },
+        "square_feet": {
+          "type": "integer"
+        },
+        "status": {
+          "type": "keyword"
+        }
+      },
+      "_meta": "Real Estate Listings"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Show newly listed properties under $300,000.",
+        "query": {
+          "query": {
+            "bool": {
+              "filter": [
+                {
+                  "range": {
+                    "price": {
+                      "lte": 300000
+                    }
+                  }
+                },
+                {
+                  "range": {
+                    "listing_date": {
+                      "gte": "now-30d/d"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List all properties with at least 4 bedrooms.",
+        "query": {
+          "query": {
+            "range": {
+              "bedrooms": {
+                "gte": 4
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+]

@@ -1,0 +1,258 @@
+[
+  {
+    "domain": "Online Retail Transactions",
+    "mapping": {
+      "properties": {
+        "transaction_id": {
+          "type": "keyword"
+        },
+        "customer_id": {
+          "type": "keyword"
+        },
+        "product_ids": {
+          "type": "keyword"
+        },
+        "transaction_date": {
+          "type": "date"
+        },
+        "total_amount": {
+          "type": "double"
+        },
+        "payment_method": {
+          "type": "keyword"
+        },
+        "status": {
+          "type": "keyword"
+        }
+      },
+      "_meta": "Online Retail Transactions"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Show completed transactions over $500.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "status": "completed"
+                }
+              },
+              "filter": {
+                "range": {
+                  "total_amount": {
+                    "gt": 500
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List all PayPal transactions this month.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "payment_method": "PayPal"
+                }
+              },
+              "filter": {
+                "range": {
+                  "transaction_date": {
+                    "gte": "now/M",
+                    "lte": "now/M+1M"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Social Media Engagement",
+    "mapping": {
+      "properties": {
+        "post_id": {
+          "type": "keyword"
+        },
+        "author_id": {
+          "type": "keyword"
+        },
+        "content": {
+          "type": "text"
+        },
+        "posted_date": {
+          "type": "date"
+        },
+        "likes": {
+          "type": "integer"
+        },
+        "comments": {
+          "type": "nested",
+          "properties": {
+            "comment_id": {
+              "type": "keyword"
+            },
+            "commenter_id": {
+              "type": "keyword"
+            },
+            "comment_text": {
+              "type": "text"
+            },
+            "comment_date": {
+              "type": "date"
+            }
+          }
+        },
+        "tags": {
+          "type": "keyword"
+        }
+      },
+      "_meta": "Social Media Engagement"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find posts with more than 100 likes.",
+        "query": {
+          "query": {
+            "range": {
+              "likes": {
+                "gt": 100
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show posts tagged with 'travel' from the last week.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "tags": "travel"
+                }
+              },
+              "filter": {
+                "range": {
+                  "posted_date": {
+                    "gte": "now-7d/d"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Vehicle Maintenance Records",
+    "mapping": {
+      "properties": {
+        "record_id": {
+          "type": "keyword"
+        },
+        "vehicle_id": {
+          "type": "keyword"
+        },
+        "service_date": {
+          "type": "date"
+        },
+        "service_type": {
+          "type": "keyword"
+        },
+        "description": {
+          "type": "text"
+        },
+        "cost": {
+          "type": "double"
+        }
+      },
+      "_meta": "Vehicle Maintenance Records"
+    },
+    "NLQs": [
+      {
+        "NLQ": "List all maintenance for vehicle ID 1234 in the past year.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "vehicle_id": "1234"
+                }
+              },
+              "filter": {
+                "range": {
+                  "service_date": {
+                    "gte": "now-1y/y"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find all oil change records.",
+        "query": {
+          "query": {
+            "term": {
+              "service_type": "oil change"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Academic Course Registrations",
+    "mapping": {
+      "properties": {
+        "registration_id": {
+          "type": "keyword"
+        },
+        "student_id": {
+          "type": "keyword"
+        },
+        "course_id": {
+          "type": "keyword"
+        },
+        "registration_date": {
+          "type": "date"
+        },
+        "status": {
+          "type": "keyword"
+        }
+      },
+      "_meta": "Academic Course Registrations"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Show registrations for course ID 5678.",
+        "query": {
+          "query": {
+            "term": {
+              "course_id": "5678"
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List all pending registrations.",
+        "query": {
+          "query": {
+            "term": {
+              "status": "pending"
+            }
+          }
+        }
+      }
+    ]
+  }
+]

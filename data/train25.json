@@ -1,0 +1,222 @@
+[
+  {
+    "domain": "Healthcare Appointments",
+    "mapping": {
+      "properties": {
+        "appointment_id": {
+          "type": "keyword"
+        },
+        "patient_id": {
+          "type": "keyword"
+        },
+        "doctor_id": {
+          "type": "keyword"
+        },
+        "appointment_date": {
+          "type": "date"
+        },
+        "type": {
+          "type": "keyword"
+        },
+        "status": {
+          "type": "keyword"
+        }
+      },
+      "_meta": "Healthcare Appointments"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Show upcoming appointments with Dr. Smith.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "doctor_id": "Dr. Smith"
+                }
+              },
+              "filter": {
+                "range": {
+                  "appointment_date": {
+                    "gte": "now/d"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List all cancelled appointments.",
+        "query": {
+          "query": {
+            "term": {
+              "status": "cancelled"
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find next available check-up appointments.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "type": "check-up"
+                }
+              },
+              "filter": {
+                "range": {
+                  "appointment_date": {
+                    "gte": "now/d"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Employee Attendance",
+    "mapping": {
+      "properties": {
+        "record_id": {
+          "type": "keyword"
+        },
+        "employee_id": {
+          "type": "keyword"
+        },
+        "date": {
+          "type": "date"
+        },
+        "status": {
+          "type": "keyword"
+        },
+        "notes": {
+          "type": "text"
+        }
+      },
+      "_meta": "Employee Attendance"
+    },
+    "NLQs": [
+      {
+        "NLQ": "List attendance records for employee 4567 this month.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "employee_id": "4567"
+                }
+              },
+              "filter": {
+                "range": {
+                  "date": {
+                    "gte": "now/M",
+                    "lte": "now/M+1M"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show all absent records last week.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "status": "absent"
+                }
+              },
+              "filter": {
+                "range": {
+                  "date": {
+                    "gte": "now-1w",
+                    "lte": "now"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "E-commerce Customer Feedback",
+    "mapping": {
+      "properties": {
+        "feedback_id": {
+          "type": "keyword"
+        },
+        "customer_id": {
+          "type": "keyword"
+        },
+        "order_id": {
+          "type": "keyword"
+        },
+        "date": {
+          "type": "date"
+        },
+        "rating": {
+          "type": "integer"
+        },
+        "comment": {
+          "type": "text"
+        }
+      },
+      "_meta": "E-commerce Customer Feedback"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find all feedback with a rating of 5 stars.",
+        "query": {
+          "query": {
+            "term": {
+              "rating": 5
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show negative feedback from the past month.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "range": {
+                  "rating": {
+                    "lte": 2
+                  }
+                }
+              },
+              "filter": {
+                "range": {
+                  "date": {
+                    "gte": "now-1M/M"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List all feedback for order 1234.",
+        "query": {
+          "query": {
+            "term": {
+              "order_id": "1234"
+            }
+          }
+        }
+      }
+    ]
+  }
+]
