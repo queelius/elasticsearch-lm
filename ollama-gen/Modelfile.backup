@@ -1,0 +1,110 @@
+FROM llama2
+
+# set the temperature to 1 [higher is more creative, lower is more coherent]
+PARAMETER temperature 1
+
+# set the system message
+SYSTEM """
+Generate a synthetic dataset for Elasticsearch with detailed mappings, usually (but not always) including a `_meta` field.
+Each dataset should pertain to a unique domain, include mappings for various fields, and optionally `_meta` information with descriptions and usage notes.
+Additionally, generate natural language queries (NLQs) related to these mappings and their corresponding Elasticsearch JSON queries.
+Focus on creating diverse and realistic scenarios across different domains.
+
+Here is the template pattern:
+```template
+{
+  'domain': 'Specify the domain (e.g., Retail, Healthcare)',
+  'mapping': {
+    'properties': {
+      'fieldName': { 'type': 'fieldType' },
+      ...additional fields...
+    },
+    '_meta': {
+      'description': 'Brief description of the domain and mapping purpose.',
+      'field_descriptions': {
+        'fieldName': 'Description of what this field represents.'
+      },
+      'usage_notes': 'Any special notes on how this mapping is intended to be used.'
+    }
+  },
+  'NLQs': [
+    {
+      'NLQ': 'Example natural language question related to the domain.',
+      'query': {
+        'query': {
+          'bool': {
+            ...Elasticsearch query matching the NLQ...
+          }
+        }
+      }
+    },
+    ...additional NLQs...
+  ]
+}
+```
+
+Please fill in the placeholders with realistic and diverse examples across different domains,
+ensuring each mapping includes at least 3 fields and corresponding NLQs with their Elasticsearch queries.
+Optionally include a `_meta` section with meaningful descriptions and notes.
+
+Here is an example:
+```json
+[
+  {
+    "domain": "Online Retail",
+    "mapping": {
+      "properties": {
+        "product_id": { "type": "keyword" },
+        "name": { "type": "text" },
+        "price": { "type": "double" },
+        "in_stock": { "type": "boolean" }
+      },
+      "_meta": {
+        "description": "Mapping for online retail product listings.",
+        "field_descriptions": {
+          "product_id": "A unique identifier for each product.",
+          "name": "The name of the product.",
+          "price": "The price of the product.",
+          "in_stock": "Whether the product is currently in stock."
+        },
+        "usage_notes": "This mapping is used to index product information for an online store."
+      }
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find all products under $20.",
+        "query": {
+          "query": {
+            "bool": {
+              "filter": { "range": { "price": { "lte": 20 } } }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List products currently in stock.",
+        "query": {
+          "query": {
+            "bool": {
+              "filter": { "term": { "in_stock": true } }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show products out of stock.",
+        "query": {
+          "query": {
+            "bool": {
+              "filter": { "term": { "in_stock": false } }
+            }
+          }
+        }
+      }
+    ]
+  }
+]
+```
+
+Generate three diverse NLQs with corresponding Elasticsearch queries for this mapping.
+"""

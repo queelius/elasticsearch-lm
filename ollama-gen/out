@@ -1,0 +1,91 @@
+Of course! I'd be happy to help you generate some synthetic data for fine-tuning your large language model (LLM) to generate Elasticsearch (E) queries from natural language queries (NLQs).
+
+Here is an example of the JSON you might generate:
+```json
+{
+  "domain": "Fashion",
+  "mapping": {
+    "properties": {
+      "product_id": { "type": "keyword", "description": "Unique identifier for each product." },
+      "name": { "type": "text", "description": "Name of the product." },
+      "price": { "type": "double", "description": "Price of the product." },
+      "color": { "type": "text", "description": "Color of the product." },
+      "size": { "type": "text", "description": "Size of the product." },
+      "material": { "type": "text", "description": "Material of the product." }
+    },
+    "_meta": "This mapping allows for filtering products by name, price, color, size, and material in search queries."  }
+  },
+  "NLQs": [
+    {
+      "NLQ": "Find all dresses under $100.",
+      "query": {
+        "query": {
+          "bool": {
+            "must": [
+              { "term": { "category": "dresses" } },
+              { "range": { "price": { "lte": 100 } } }
+            ],
+            "filter": { "term": { "in_stock": true } }
+          }
+        }
+      }
+    },
+    {
+      "NLQ": "List tops under $50.",
+      "query": {
+        "query": {
+          "bool": {
+            "must": [
+              { "term": { "category": "tops" } },
+              { "range": { "price": { "lte": 50 } } }
+            ],
+            "filter": { "term": { "in_stock": true } }
+          }
+        }
+      }
+    },
+    {
+      "NLQ": "Show all shoes in the 'winter' category.",
+      "query": {
+        "query": {
+          "bool": {
+            "must": [
+              { "term": { "category": "winter" } },
+              { "range": { "price": { "gt": 100 } } }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "NLQ": "List items that are not in stock.",
+      "query": {
+        "query": {
+          "bool": {
+            "must_not": {
+              "term": { "in_stock": true }
+            }
+          }
+        }
+      }
+    },
+    {
+      "NLQ": "Show items with a low price.",
+      "query": {
+        "query": {
+          "bool": {
+            "must": [
+              { "term": { "price": { "lt": 100 } } },
+              { "range": { "price": { "lte": 100 } } }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}
+```
+In this example, the `domain` is set to "Fashion", the mapping includes properties such as "product_id", "name", "price", "color", "size", and "material", and there are five NLQs provided. Each NLQ consists of a natural language query followed by a corresponding JSON object that defines the query in the Elasticsearch query language (ES Query DSL).
+
+I hope this helps! Let me know if you have any questions or need further assistance.
+
