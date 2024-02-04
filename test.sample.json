@@ -1,0 +1,202 @@
+[
+  {
+    "domain": "Vehicle Rental Agreements",
+    "mapping": {
+      "properties": {
+        "agreement_id": {
+          "type": "keyword"
+        },
+        "customer_id": {
+          "type": "keyword"
+        },
+        "vehicle_id": {
+          "type": "keyword"
+        },
+        "start_date": {
+          "type": "date"
+        },
+        "end_date": {
+          "type": "date"
+        },
+        "daily_rate": {
+          "type": "double"
+        },
+        "total_cost": {
+          "type": "double"
+        },
+        "status": {
+          "type": "keyword"
+        }
+      },
+      "_meta": "Vehicle Rental Agreements"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Show active rentals over $300.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "status": "active"
+                }
+              },
+              "filter": {
+                "range": {
+                  "total_cost": {
+                    "gt": 300
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List all rentals starting next week.",
+        "query": {
+          "query": {
+            "range": {
+              "start_date": {
+                "gte": "now+1w/w",
+                "lte": "now+2w/w"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Hotel Bookings",
+    "mapping": {
+      "properties": {
+        "booking_id": {
+          "type": "keyword"
+        },
+        "guest_name": {
+          "type": "text"
+        },
+        "room_type": {
+          "type": "keyword"
+        },
+        "check_in_date": {
+          "type": "date"
+        },
+        "check_out_date": {
+          "type": "date"
+        },
+        "price_per_night": {
+          "type": "double"
+        },
+        "total_price": {
+          "type": "double"
+        },
+        "amenities": {
+          "type": "keyword"
+        }
+      },
+      "_meta": "Hotel Bookings"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find luxury room bookings for more than 5 nights.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "room_type": "luxury"
+                }
+              },
+              "script": {
+                "script": {
+                  "source": "ChronoUnit.DAYS.between(doc['check_in_date'].value, doc['check_out_date'].value) > 5",
+                  "lang": "painless"
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Online Courses",
+    "mapping": {
+      "properties": {
+        "course_id": {
+          "type": "keyword"
+        },
+        "title": {
+          "type": "text"
+        },
+        "instructor": {
+          "type": "text"
+        },
+        "category": {
+          "type": "keyword"
+        },
+        "published_date": {
+          "type": "date"
+        },
+        "enrollment_count": {
+          "type": "integer"
+        },
+        "rating": {
+          "type": "double"
+        }
+      },
+      "_meta": "Online Courses"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Show courses in 'Data Science' with high enrollment.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "category": "Data Science"
+                }
+              },
+              "filter": {
+                "range": {
+                  "enrollment_count": {
+                    "gt": 500
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List all courses published by 'Dr. Jane Doe'.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "match": {
+                  "instructor": "Dr. Jane Doe"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find courses with a rating above 4.5.",
+        "query": {
+          "query": {
+            "range": {
+              "rating": {
+                "gt": 4.5
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+]

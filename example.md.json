@@ -1,0 +1,34 @@
+[
+  {
+    "domain": "Online Retail",
+    "mapping": {
+      "properties": {
+        "product_id": {
+          "type": "keyword",
+          "description": "Unique identifier for each product."
+        },
+        "name": {
+          "type": "text",
+          "description": "Name of the product."
+        }
+      },
+      "_meta": "This mapping allows for filtering products by name, availability, and categories in search queries."
+    },
+    "NLQs": [
+      {
+        "NLQ": "What products are available?",
+        "query": {
+          "match_all": {}
+        }
+      },
+      {
+        "NLQ": "Show me all products with 'apple' in the name.",
+        "query": {
+          "match": {
+            "name": "apple"
+          }
+        }
+      }
+    ]
+  }
+]

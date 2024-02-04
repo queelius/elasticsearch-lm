@@ -74,6 +74,7 @@ class DataTool:
         }
         """
 
+        print(f"Validating mapping")
         if not isinstance(entry, dict):
             print(f"Expected a dict type but got {type(entry)}: {entry}")
             return False
@@ -103,6 +104,7 @@ class DataTool:
                 print(f"Missing query: {nlq}")
                 return False
 
+        print (f"Valid mapping: {entry['domain']=}")
         return True
 
     def validate(self) -> None:

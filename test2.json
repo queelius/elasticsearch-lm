@@ -1,0 +1,4625 @@
+[
+  {
+    "domain": "Travel Bookings",
+    "mapping": {
+      "properties": {
+        "booking_id": {
+          "type": "keyword"
+        },
+        "customer_name": {
+          "type": "text"
+        },
+        "destination": {
+          "type": "keyword"
+        },
+        "booking_date": {
+          "type": "date"
+        },
+        "travel_date": {
+          "type": "date"
+        },
+        "price": {
+          "type": "double"
+        },
+        "duration_days": {
+          "type": "integer"
+        },
+        "accommodation_type": {
+          "type": "keyword"
+        },
+        "is_refundable": {
+          "type": "boolean"
+        }
+      },
+      "_meta": "Travel Bookings"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find all bookings to Paris in the next 3 months.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "destination": "Paris"
+                }
+              },
+              "filter": {
+                "range": {
+                  "travel_date": {
+                    "gte": "now/d",
+                    "lte": "now+3M/d"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show refundable bookings for beach resorts.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "accommodation_type": "beach resort"
+                }
+              },
+              "filter": {
+                "term": {
+                  "is_refundable": true
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Retail Products",
+    "mapping": {
+      "properties": {
+        "product_id": {
+          "type": "keyword"
+        },
+        "name": {
+          "type": "text"
+        },
+        "category": {
+          "type": "keyword"
+        },
+        "price": {
+          "type": "double"
+        },
+        "stock_quantity": {
+          "type": "integer"
+        },
+        "rating": {
+          "type": "double"
+        },
+        "release_date": {
+          "type": "date"
+        }
+      },
+      "_meta": "Retail Products"
+    },
+    "NLQs": [
+      {
+        "NLQ": "List all electronics with a rating above 4 stars.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "category": "electronics"
+                }
+              },
+              "filter": {
+                "range": {
+                  "rating": {
+                    "gt": 4
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find new arrivals in the kitchen category that are in stock.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "category": "kitchen"
+                }
+              },
+              "filter": [
+                {
+                  "range": {
+                    "release_date": {
+                      "gte": "now-1M/M"
+                    }
+                  }
+                },
+                {
+                  "range": {
+                    "stock_quantity": {
+                      "gt": 0
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Academic Publications",
+    "mapping": {
+      "properties": {
+        "publication_id": {
+          "type": "keyword"
+        },
+        "title": {
+          "type": "text"
+        },
+        "author": {
+          "type": "text"
+        },
+        "publication_year": {
+          "type": "integer"
+        },
+        "keywords": {
+          "type": "text"
+        },
+        "citations": {
+          "type": "integer"
+        },
+        "journal": {
+          "type": "keyword"
+        }
+      },
+      "_meta": "Academic Publications"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find all publications on machine learning since 2018 with over 100 citations.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "match": {
+                  "keywords": "machine learning"
+                }
+              },
+              "filter": [
+                {
+                  "range": {
+                    "publication_year": {
+                      "gte": 2018
+                    }
+                  }
+                },
+                {
+                  "range": {
+                    "citations": {
+                      "gt": 100
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show the most cited publications in the Journal of Artificial Intelligence.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "journal": "Journal of Artificial Intelligence"
+                }
+              }
+            }
+          },
+          "sort": [
+            {
+              "citations": {
+                "order": "desc"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Employee Data",
+    "mapping": {
+      "properties": {
+        "employee_id": {
+          "type": "keyword"
+        },
+        "name": {
+          "type": "text"
+        },
+        "department": {
+          "type": "keyword"
+        },
+        "position": {
+          "type": "text"
+        },
+        "salary": {
+          "type": "double"
+        },
+        "hire_date": {
+          "type": "date"
+        },
+        "location": {
+          "type": "keyword"
+        },
+        "skills": {
+          "type": "text"
+        }
+      },
+      "_meta": "Employee Data"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find all engineers in the software department.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": [
+                {
+                  "match": {
+                    "position": "engineer"
+                  }
+                },
+                {
+                  "term": {
+                    "department": "software"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Who was hired in the last year with a salary over 100000?",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "range": {
+                  "hire_date": {
+                    "gte": "now-1y"
+                  }
+                }
+              },
+              "filter": {
+                "range": {
+                  "salary": {
+                    "gt": 100000
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List employees in New York or San Francisco with Python skills.",
+        "query": {
+          "query": {
+            "bool": {
+              "should": [
+                {
+                  "term": {
+                    "location": "New York"
+                  }
+                },
+                {
+                  "term": {
+                    "location": "San Francisco"
+                  }
+                }
+              ],
+              "must": {
+                "match": {
+                  "skills": "Python"
+                }
+              },
+              "minimum_should_match": 1
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show top 5 highest earning project managers.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "match": {
+                  "position": "project manager"
+                }
+              }
+            }
+          },
+          "size": 5,
+          "sort": [
+            {
+              "salary": {
+                "order": "desc"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "NLQ": "Find employees who joined before 2015 but still earn less than 60000.",
+        "query": {
+          "query": {
+            "bool": {
+              "filter": [
+                {
+                  "range": {
+                    "hire_date": {
+                      "lt": "2015-01-01"
+                    }
+                  }
+                },
+                {
+                  "range": {
+                    "salary": {
+                      "lt": 60000
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Travel Bookings",
+    "mapping": {
+      "properties": {
+        "booking_id": {
+          "type": "keyword"
+        },
+        "customer_name": {
+          "type": "text"
+        },
+        "destination": {
+          "type": "keyword"
+        },
+        "booking_date": {
+          "type": "date"
+        },
+        "travel_date": {
+          "type": "date"
+        },
+        "price": {
+          "type": "double"
+        },
+        "duration_days": {
+          "type": "integer"
+        },
+        "accommodation_type": {
+          "type": "keyword"
+        },
+        "is_refundable": {
+          "type": "boolean"
+        }
+      },
+      "_meta": "Travel Bookings"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find all bookings to Paris in the next 3 months.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "destination": "Paris"
+                }
+              },
+              "filter": {
+                "range": {
+                  "travel_date": {
+                    "gte": "now/d",
+                    "lte": "now+3M/d"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show refundable bookings for beach resorts.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "accommodation_type": "beach resort"
+                }
+              },
+              "filter": {
+                "term": {
+                  "is_refundable": true
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Retail Products",
+    "mapping": {
+      "properties": {
+        "product_id": {
+          "type": "keyword"
+        },
+        "name": {
+          "type": "text"
+        },
+        "category": {
+          "type": "keyword"
+        },
+        "price": {
+          "type": "double"
+        },
+        "stock_quantity": {
+          "type": "integer"
+        },
+        "rating": {
+          "type": "double"
+        },
+        "release_date": {
+          "type": "date"
+        }
+      },
+      "_meta": "Retail Products"
+    },
+    "NLQs": [
+      {
+        "NLQ": "List all electronics with a rating above 4 stars.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "category": "electronics"
+                }
+              },
+              "filter": {
+                "range": {
+                  "rating": {
+                    "gt": 4
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find new arrivals in the kitchen category that are in stock.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "category": "kitchen"
+                }
+              },
+              "filter": [
+                {
+                  "range": {
+                    "release_date": {
+                      "gte": "now-1M/M"
+                    }
+                  }
+                },
+                {
+                  "range": {
+                    "stock_quantity": {
+                      "gt": 0
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Academic Publications",
+    "mapping": {
+      "properties": {
+        "publication_id": {
+          "type": "keyword"
+        },
+        "title": {
+          "type": "text"
+        },
+        "author": {
+          "type": "text"
+        },
+        "publication_year": {
+          "type": "integer"
+        },
+        "keywords": {
+          "type": "text"
+        },
+        "citations": {
+          "type": "integer"
+        },
+        "journal": {
+          "type": "keyword"
+        }
+      },
+      "_meta": "Academic Publications"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find all publications on machine learning since 2018 with over 100 citations.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "match": {
+                  "keywords": "machine learning"
+                }
+              },
+              "filter": [
+                {
+                  "range": {
+                    "publication_year": {
+                      "gte": 2018
+                    }
+                  }
+                },
+                {
+                  "range": {
+                    "citations": {
+                      "gt": 100
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show the most cited publications in the Journal of Artificial Intelligence.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "journal": "Journal of Artificial Intelligence"
+                }
+              }
+            }
+          },
+          "sort": [
+            {
+              "citations": {
+                "order": "desc"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Employee Performance Reviews",
+    "mapping": {
+      "properties": {
+        "employee_id": {
+          "type": "keyword"
+        },
+        "name": {
+          "type": "text"
+        },
+        "department": {
+          "type": "keyword"
+        },
+        "review": {
+          "type": "nested",
+          "properties": {
+            "year": {
+              "type": "integer"
+            },
+            "rating": {
+              "type": "double"
+            },
+            "feedback": {
+              "type": "text"
+            },
+            "goals": {
+              "type": "nested",
+              "properties": {
+                "goal_description": {
+                  "type": "text"
+                },
+                "completion_status": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "salary_history": {
+          "type": "nested",
+          "properties": {
+            "year": {
+              "type": "integer"
+            },
+            "salary": {
+              "type": "double"
+            }
+          }
+        }
+      },
+      "_meta": "Employee Performance Reviews"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find employees with an average rating above 4.5 in the last 3 years.",
+        "query": {
+          "query": {
+            "nested": {
+              "path": "review",
+              "query": {
+                "bool": {
+                  "must": [
+                    {
+                      "range": {
+                        "review.year": {
+                          "gte": "now-3y/y"
+                        }
+                      }
+                    }
+                  ],
+                  "filter": {
+                    "range": {
+                      "review.rating": {
+                        "gt": 4.5
+                      }
+                    }
+                  }
+                }
+              },
+              "inner_hits": {
+                "size": 3,
+                "sort": [
+                  {
+                    "review.year": "desc"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show the salary growth of employees in the IT department since 2018.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "department": "IT"
+                }
+              }
+            }
+          },
+          "nested": {
+            "path": "salary_history",
+            "query": {
+              "range": {
+                "salary_history.year": {
+                  "gte": 2018
+                }
+              }
+            },
+            "inner_hits": {
+              "sort": [
+                {
+                  "salary_history.year": "asc"
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Identify employees who have not met all their goals in the previous year.",
+        "query": {
+          "query": {
+            "nested": {
+              "path": "review",
+              "query": {
+                "bool": {
+                  "must": [
+                    {
+                      "term": {
+                        "review.year": "now-1y/y"
+                      }
+                    },
+                    {
+                      "nested": {
+                        "path": "review.goals",
+                        "query": {
+                          "term": {
+                            "review.goals.completion_status": false
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List all feedback for employees in the marketing department with ratings below 3.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "department": "marketing"
+                }
+              }
+            }
+          },
+          "nested": {
+            "path": "review",
+            "query": {
+              "range": {
+                "review.rating": {
+                  "lt": 3
+                }
+              }
+            },
+            "inner_hits": {}
+          }
+        }
+      },
+      {
+        "NLQ": "Find employees who have consistently received salary increases each year.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "nested": {
+                  "path": "salary_history",
+                  "query": {
+                    "script_score": {
+                      "query": {
+                        "match_all": {}
+                      },
+                      "script": {
+                        "source": "/* script to calculate consistent salary increases */"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Technology Product Reviews",
+    "mapping": {
+      "properties": {
+        "product_id": {
+          "type": "keyword"
+        },
+        "name": {
+          "type": "text"
+        },
+        "category": {
+          "type": "keyword"
+        },
+        "release_date": {
+          "type": "date"
+        },
+        "price": {
+          "type": "double"
+        },
+        "reviews": {
+          "type": "nested",
+          "properties": {
+            "review_id": {
+              "type": "keyword"
+            },
+            "author": {
+              "type": "text"
+            },
+            "rating": {
+              "type": "double"
+            },
+            "content": {
+              "type": "text"
+            },
+            "review_date": {
+              "type": "date"
+            }
+          }
+        }
+      },
+      "_meta": "Technology Product Reviews"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find products in the 'smartphone' category with an average rating above 4.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "category": "smartphone"
+                }
+              },
+              "should": {
+                "nested": {
+                  "path": "reviews",
+                  "query": {
+                    "range": {
+                      "reviews.rating": {
+                        "gt": 4
+                      }
+                    }
+                  },
+                  "inner_hits": {
+                    "size": 5
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Restaurant Reservations",
+    "mapping": {
+      "properties": {
+        "reservation_id": {
+          "type": "keyword"
+        },
+        "customer_name": {
+          "type": "text"
+        },
+        "restaurant_name": {
+          "type": "text"
+        },
+        "reservation_date": {
+          "type": "date"
+        },
+        "party_size": {
+          "type": "integer"
+        },
+        "special_requests": {
+          "type": "text"
+        },
+        "status": {
+          "type": "keyword"
+        }
+      },
+      "_meta": "Restaurant Reservations"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Show all upcoming reservations for parties larger than 4.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "range": {
+                  "party_size": {
+                    "gt": 4
+                  }
+                }
+              },
+              "filter": {
+                "range": {
+                  "reservation_date": {
+                    "gte": "now/d"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Local Library Catalog",
+    "mapping": {
+      "properties": {
+        "book_id": {
+          "type": "keyword"
+        },
+        "title": {
+          "type": "text"
+        },
+        "author": {
+          "type": "text"
+        },
+        "publication_year": {
+          "type": "date"
+        },
+        "genres": {
+          "type": "keyword"
+        },
+        "availability": {
+          "type": "boolean"
+        }
+      },
+      "_meta": "Local Library Catalog"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find available mystery books published before 2000.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "genres": "mystery"
+                }
+              },
+              "filter": [
+                {
+                  "range": {
+                    "publication_year": {
+                      "lt": "2000-01-01"
+                    }
+                  }
+                },
+                {
+                  "term": {
+                    "availability": true
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Event Management",
+    "mapping": {
+      "properties": {
+        "event_id": {
+          "type": "keyword"
+        },
+        "title": {
+          "type": "text"
+        },
+        "organizer": {
+          "type": "text"
+        },
+        "date": {
+          "type": "date"
+        },
+        "location": {
+          "type": "keyword"
+        },
+        "attendees": {
+          "type": "integer"
+        },
+        "topics": {
+          "type": "keyword"
+        }
+      },
+      "_meta": "Event Management"
+    },
+    "NLQs": [
+      {
+        "NLQ": "List upcoming tech events with more than 100 attendees.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": [
+                {
+                  "term": {
+                    "topics": "tech"
+                  }
+                },
+                {
+                  "range": {
+                    "attendees": {
+                      "gt": 100
+                    }
+                  }
+                },
+                {
+                  "range": {
+                    "date": {
+                      "gte": "now/d"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find events organized by 'Global Tech' in 'New York'.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": [
+                {
+                  "match": {
+                    "organizer": "Global Tech"
+                  }
+                },
+                {
+                  "term": {
+                    "location": "New York"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Academic Courses",
+    "mapping": {
+      "properties": {
+        "course_id": {
+          "type": "keyword"
+        },
+        "name": {
+          "type": "text"
+        },
+        "department": {
+          "type": "keyword"
+        },
+        "credits": {
+          "type": "integer"
+        },
+        "instructor": {
+          "type": "text"
+        },
+        "semester": {
+          "type": "keyword"
+        },
+        "enrollment": {
+          "type": "nested",
+          "properties": {
+            "student_id": {
+              "type": "keyword"
+            },
+            "grade": {
+              "type": "keyword"
+            }
+          }
+        }
+      },
+      "_meta": "Academic Courses"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Show all computer science courses available in the fall semester.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": [
+                {
+                  "term": {
+                    "department": "computer science"
+                  }
+                },
+                {
+                  "term": {
+                    "semester": "fall"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find courses taught by 'Dr. Johnson' with more than 50 students enrolled.",
+        "query": {
+          "script": {
+            "script": {
+              "source": "doc['enrollment'].size() > 50",
+              "lang": "painless"
+            }
+          },
+          "query": {
+            "bool": {
+              "must": {
+                "match": {
+                  "instructor": "Dr. Johnson"
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Health Records",
+    "mapping": {
+      "properties": {
+        "patient_id": {
+          "type": "keyword"
+        },
+        "name": {
+          "type": "text"
+        },
+        "age": {
+          "type": "integer"
+        },
+        "visits": {
+          "type": "nested",
+          "properties": {
+            "visit_id": {
+              "type": "keyword"
+            },
+            "date": {
+              "type": "date"
+            },
+            "reason": {
+              "type": "text"
+            },
+            "diagnosis": {
+              "type": "text"
+            }
+          }
+        },
+        "medications": {
+          "type": "nested",
+          "properties": {
+            "name": {
+              "type": "text"
+            },
+            "prescribed_date": {
+              "type": "date"
+            },
+            "dosage": {
+              "type": "text"
+            }
+          }
+        }
+      },
+      "_meta": "Health Records"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Retrieve patient records with visits due to 'cardiac issues' in the last year.",
+        "query": {
+          "query": {
+            "nested": {
+              "path": "visits",
+              "query": {
+                "bool": {
+                  "must": [
+                    {
+                      "match": {
+                        "visits.reason": "cardiac issues"
+                      }
+                    },
+                    {
+                      "range": {
+                        "visits.date": {
+                          "gte": "now-1y/y"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List all patients over 60 with diabetes medications.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "range": {
+                  "age": {
+                    "gt": 60
+                  }
+                }
+              },
+              "should": {
+                "nested": {
+                  "path": "medications",
+                  "query": {
+                    "match": {
+                      "medications.name": "diabetes"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "University Enrollment",
+    "mapping": {
+      "properties": {
+        "student_id": {
+          "type": "keyword"
+        },
+        "name": {
+          "type": "text"
+        },
+        "enrollment_year": {
+          "type": "integer"
+        },
+        "major": {
+          "type": "keyword"
+        },
+        "courses": {
+          "type": "nested",
+          "properties": {
+            "course_id": {
+              "type": "keyword"
+            },
+            "grade": {
+              "type": "keyword"
+            }
+          }
+        },
+        "scholarship": {
+          "type": "boolean"
+        }
+      },
+      "_meta": "University Enrollment"
+    },
+    "NLQs": [
+      {
+        "NLQ": "List students majoring in Computer Science enrolled after 2018 with a scholarship.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": [
+                {
+                  "term": {
+                    "major": "Computer Science"
+                  }
+                },
+                {
+                  "range": {
+                    "enrollment_year": {
+                      "gt": 2018
+                    }
+                  }
+                },
+                {
+                  "term": {
+                    "scholarship": true
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Workplace Surveys",
+    "mapping": {
+      "properties": {
+        "survey_id": {
+          "type": "keyword"
+        },
+        "employee_id": {
+          "type": "keyword"
+        },
+        "date": {
+          "type": "date"
+        },
+        "responses": {
+          "type": "nested",
+          "properties": {
+            "question_id": {
+              "type": "keyword"
+            },
+            "response": {
+              "type": "text"
+            },
+            "rating": {
+              "type": "integer"
+            }
+          }
+        }
+      },
+      "_meta": "Workplace Surveys"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find surveys with a rating below 3 for question 10.",
+        "query": {
+          "query": {
+            "nested": {
+              "path": "responses",
+              "query": {
+                "bool": {
+                  "must": [
+                    {
+                      "term": {
+                        "responses.question_id": "10"
+                      }
+                    },
+                    {
+                      "range": {
+                        "responses.rating": {
+                          "lt": 3
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "E-commerce Transactions",
+    "mapping": {
+      "properties": {
+        "transaction_id": {
+          "type": "keyword"
+        },
+        "customer_id": {
+          "type": "keyword"
+        },
+        "product_id": {
+          "type": "keyword"
+        },
+        "purchase_date": {
+          "type": "date"
+        },
+        "quantity": {
+          "type": "integer"
+        },
+        "price": {
+          "type": "double"
+        },
+        "payment_method": {
+          "type": "keyword"
+        },
+        "shipping": {
+          "type": "object",
+          "properties": {
+            "address": {
+              "type": "text"
+            },
+            "city": {
+              "type": "keyword"
+            },
+            "state": {
+              "type": "keyword"
+            },
+            "estimated_delivery_date": {
+              "type": "date"
+            }
+          }
+        }
+      },
+      "_meta": "E-commerce Transactions"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Show transactions made by customer 12345 using credit card.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": [
+                {
+                  "term": {
+                    "customer_id": "12345"
+                  }
+                },
+                {
+                  "term": {
+                    "payment_method": "credit card"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List all purchases in New York state last month.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "shipping.state": "New York"
+                }
+              },
+              "filter": {
+                "range": {
+                  "purchase_date": {
+                    "gte": "now-1M/M",
+                    "lte": "now/M"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Online Learning Platforms",
+    "mapping": {
+      "properties": {
+        "course_id": {
+          "type": "keyword"
+        },
+        "title": {
+          "type": "text"
+        },
+        "instructor": {
+          "type": "text"
+        },
+        "category": {
+          "type": "keyword"
+        },
+        "enrollment_count": {
+          "type": "integer"
+        },
+        "rating": {
+          "type": "double"
+        },
+        "comments": {
+          "type": "nested",
+          "properties": {
+            "comment_id": {
+              "type": "keyword"
+            },
+            "user_id": {
+              "type": "keyword"
+            },
+            "text": {
+              "type": "text"
+            },
+            "date_posted": {
+              "type": "date"
+            }
+          }
+        }
+      },
+      "_meta": "Online Learning Platforms"
+    },
+    "NLQs": [
+      {
+        "NLQ": "List top-rated courses in the 'Data Science' category.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "category": "Data Science"
+                }
+              }
+            }
+          },
+          "sort": [
+            {
+              "rating": {
+                "order": "desc"
+              }
+            }
+          ],
+          "size": 5
+        }
+      },
+      {
+        "NLQ": "Identify courses with increasing enrollment over the past 3 years.",
+        "query": {
+          "query": {
+            "bool": {
+              "script": {
+                "script": {
+                  "source": "/* Script to determine courses with increasing enrollment */",
+                  "lang": "painless"
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Fitness Center Memberships",
+    "mapping": {
+      "properties": {
+        "member_id": {
+          "type": "keyword"
+        },
+        "name": {
+          "type": "text"
+        },
+        "membership_start_date": {
+          "type": "date"
+        },
+        "membership_type": {
+          "type": "keyword"
+        },
+        "sessions_attended": {
+          "type": "nested",
+          "properties": {
+            "session_id": {
+              "type": "keyword"
+            },
+            "date": {
+              "type": "date"
+            },
+            "duration_minutes": {
+              "type": "integer"
+            }
+          }
+        },
+        "payment_history": {
+          "type": "nested",
+          "properties": {
+            "payment_id": {
+              "type": "keyword"
+            },
+            "date": {
+              "type": "date"
+            },
+            "amount": {
+              "type": "double"
+            }
+          }
+        }
+      },
+      "_meta": "Fitness Center Memberships"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find members with premium membership who attended more than 20 sessions.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "membership_type": "premium"
+                }
+              },
+              "script": {
+                "script": {
+                  "source": "doc['sessions_attended'].size() > 20",
+                  "lang": "painless"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show total payments made by members in the last year.",
+        "query": {
+          "query": {
+            "nested": {
+              "path": "payment_history",
+              "query": {
+                "range": {
+                  "payment_history.date": {
+                    "gte": "now-1y/y"
+                  }
+                }
+              }
+            },
+            "aggs": {
+              "total_payments": {
+                "sum": {
+                  "field": "payment_history.amount"
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Hotel Bookings",
+    "mapping": {
+      "properties": {
+        "booking_id": {
+          "type": "keyword"
+        },
+        "guest_name": {
+          "type": "text"
+        },
+        "room_type": {
+          "type": "keyword"
+        },
+        "check_in_date": {
+          "type": "date"
+        },
+        "check_out_date": {
+          "type": "date"
+        },
+        "price_per_night": {
+          "type": "double"
+        },
+        "total_price": {
+          "type": "double"
+        },
+        "amenities": {
+          "type": "keyword"
+        }
+      },
+      "_meta": "Hotel Bookings"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find luxury room bookings for more than 5 nights.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "room_type": "luxury"
+                }
+              },
+              "script": {
+                "script": {
+                  "source": "ChronoUnit.DAYS.between(doc['check_in_date'].value, doc['check_out_date'].value) > 5",
+                  "lang": "painless"
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Job Applications",
+    "mapping": {
+      "properties": {
+        "application_id": {
+          "type": "keyword"
+        },
+        "applicant_name": {
+          "type": "text"
+        },
+        "position": {
+          "type": "text"
+        },
+        "applied_date": {
+          "type": "date"
+        },
+        "status": {
+          "type": "keyword"
+        },
+        "resume": {
+          "type": "text"
+        },
+        "experience_years": {
+          "type": "integer"
+        },
+        "skills": {
+          "type": "text"
+        }
+      },
+      "_meta": "Job Applications"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Show applications for 'Data Scientist' position received in the last month.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "match": {
+                  "position": "Data Scientist"
+                }
+              },
+              "filter": {
+                "range": {
+                  "applied_date": {
+                    "gte": "now-1M/M"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Vehicle Sales",
+    "mapping": {
+      "properties": {
+        "vehicle_id": {
+          "type": "keyword"
+        },
+        "make": {
+          "type": "text"
+        },
+        "model": {
+          "type": "text"
+        },
+        "year": {
+          "type": "integer"
+        },
+        "price": {
+          "type": "double"
+        },
+        "mileage": {
+          "type": "integer"
+        },
+        "color": {
+          "type": "keyword"
+        },
+        "available": {
+          "type": "boolean"
+        }
+      },
+      "_meta": "Vehicle Sales"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find all available red Toyota cars from 2015 or newer under $20,000.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": [
+                {
+                  "term": {
+                    "make": "Toyota"
+                  }
+                },
+                {
+                  "term": {
+                    "color": "red"
+                  }
+                },
+                {
+                  "range": {
+                    "year": {
+                      "gte": 2015
+                    }
+                  }
+                },
+                {
+                  "range": {
+                    "price": {
+                      "lte": 20000
+                    }
+                  }
+                }
+              ],
+              "filter": {
+                "term": {
+                  "available": true
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "City Park Events",
+    "mapping": {
+      "properties": {
+        "event_id": {
+          "type": "keyword"
+        },
+        "name": {
+          "type": "text"
+        },
+        "date": {
+          "type": "date"
+        },
+        "type": {
+          "type": "keyword"
+        },
+        "attendees_count": {
+          "type": "integer"
+        },
+        "location": {
+          "type": "text"
+        }
+      },
+      "_meta": "City Park Events"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find all music events happening next month.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "type": "music"
+                }
+              },
+              "filter": {
+                "range": {
+                  "date": {
+                    "gte": "now+1M/M",
+                    "lte": "now+2M/M"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List upcoming events in Central Park.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "match": {
+                  "location": "Central Park"
+                }
+              },
+              "filter": {
+                "range": {
+                  "date": {
+                    "gte": "now/d"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show events with over 500 attendees.",
+        "query": {
+          "query": {
+            "range": {
+              "attendees_count": {
+                "gt": 500
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find all music events happening next month.",
+        "query": {
+          "query": {
+            "bool": {
+              "filter": [
+                {
+                  "term": {
+                    "type": "music"
+                  }
+                },
+                {
+                  "range": {
+                    "date": {
+                      "gte": "now+1M/M",
+                      "lte": "now+2M/M"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Library Book Loans",
+    "mapping": {
+      "properties": {
+        "loan_id": {
+          "type": "keyword"
+        },
+        "book_id": {
+          "type": "keyword"
+        },
+        "user_id": {
+          "type": "keyword"
+        },
+        "loan_date": {
+          "type": "date"
+        },
+        "due_date": {
+          "type": "date"
+        },
+        "return_date": {
+          "type": "date"
+        }
+      },
+      "_meta": "Library Book Loans"
+    },
+    "NLQs": [
+      {
+        "NLQ": "List all books due next week.",
+        "query": {
+          "query": {
+            "bool": {
+              "filter": {
+                "range": {
+                  "due_date": {
+                    "gte": "now/w",
+                    "lte": "now/w+1w"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show books that were returned late.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "script": {
+                  "script": {
+                    "source": "doc['return_date'].value > doc['due_date'].value",
+                    "lang": "painless"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List all books due next week.",
+        "query": {
+          "query": {
+            "range": {
+              "due_date": {
+                "gte": "now+7d/d",
+                "lte": "now+14d/d"
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show books that were returned late.",
+        "query": {
+          "query": {
+            "bool": {
+              "must_not": {
+                "range": {
+                  "return_date": {
+                    "lte": "due_date"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Fitness Class Signups",
+    "mapping": {
+      "properties": {
+        "class_id": {
+          "type": "keyword"
+        },
+        "title": {
+          "type": "text"
+        },
+        "instructor": {
+          "type": "text"
+        },
+        "date": {
+          "type": "date"
+        },
+        "capacity": {
+          "type": "integer"
+        },
+        "enrolled": {
+          "type": "integer"
+        }
+      },
+      "_meta": "Fitness Class Signups"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find yoga classes with spots left this week.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "match": {
+                  "title": "yoga"
+                }
+              },
+              "filter": [
+                {
+                  "range": {
+                    "date": {
+                      "gte": "now/w",
+                      "lte": "now/w+1w"
+                    }
+                  }
+                },
+                {
+                  "script": {
+                    "script": {
+                      "source": "doc['capacity'].value > doc['enrolled'].value",
+                      "lang": "painless"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show fitness classes that are fully booked.",
+        "query": {
+          "query": {
+            "bool": {
+              "filter": {
+                "script": {
+                  "script": {
+                    "source": "doc['enrolled'].value >= doc['capacity'].value",
+                    "lang": "painless"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Tech Support Tickets",
+    "mapping": {
+      "properties": {
+        "ticket_id": {
+          "type": "keyword"
+        },
+        "subject": {
+          "type": "text"
+        },
+        "description": {
+          "type": "text"
+        },
+        "submission_date": {
+          "type": "date"
+        },
+        "status": {
+          "type": "keyword"
+        },
+        "priority": {
+          "type": "keyword"
+        },
+        "assigned_team": {
+          "type": "keyword"
+        }
+      },
+      "_meta": "Tech Support Tickets"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find all unresolved tickets submitted in the last week.",
+        "query": {
+          "query": {
+            "bool": {
+              "must_not": {
+                "term": {
+                  "status": "resolved"
+                }
+              },
+              "filter": {
+                "range": {
+                  "submission_date": {
+                    "gte": "now-7d/d"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List high priority tickets currently open.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "priority": "high"
+                }
+              },
+              "must_not": {
+                "term": {
+                  "status": "resolved"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show tickets assigned to the 'networking' team.",
+        "query": {
+          "query": {
+            "term": {
+              "assigned_team": "networking"
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find all unresolved tickets submitted in the last week.",
+        "query": {
+          "query": {
+            "bool": {
+              "must_not": {
+                "terms": {
+                  "status": [
+                    "resolved",
+                    "closed"
+                  ]
+                }
+              },
+              "filter": {
+                "range": {
+                  "submission_date": {
+                    "gte": "now-1w/w"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Customer Reviews",
+    "mapping": {
+      "properties": {
+        "review_id": {
+          "type": "keyword"
+        },
+        "product_id": {
+          "type": "keyword"
+        },
+        "author": {
+          "type": "text"
+        },
+        "rating": {
+          "type": "integer"
+        },
+        "comment": {
+          "type": "text"
+        },
+        "review_date": {
+          "type": "date"
+        }
+      },
+      "_meta": "Customer Reviews"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Show all 5-star reviews from the past month.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "rating": 5
+                }
+              },
+              "filter": {
+                "range": {
+                  "review_date": {
+                    "gte": "now-1M/M"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List reviews for product 1234.",
+        "query": {
+          "query": {
+            "term": {
+              "product_id": "1234"
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find negative comments for product 5678.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "product_id": "5678"
+                }
+              },
+              "filter": {
+                "range": {
+                  "rating": {
+                    "lt": 3
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show all 5-star reviews from the past month.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "match": {
+                  "rating": "5"
+                }
+              },
+              "filter": {
+                "range": {
+                  "review_date": {
+                    "gte": "now-30d/d"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Real Estate Transactions",
+    "mapping": {
+      "properties": {
+        "transaction_id": {
+          "type": "keyword"
+        },
+        "property_id": {
+          "type": "keyword"
+        },
+        "buyer_id": {
+          "type": "keyword"
+        },
+        "seller_id": {
+          "type": "keyword"
+        },
+        "sale_price": {
+          "type": "double"
+        },
+        "sale_date": {
+          "type": "date"
+        },
+        "property_type": {
+          "type": "keyword"
+        },
+        "location": {
+          "type": "text"
+        }
+      },
+      "_meta": "Real Estate Transactions"
+    },
+    "NLQs": [
+      {
+        "NLQ": "List all transactions for residential properties over $500,000.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "property_type": "residential"
+                }
+              },
+              "filter": {
+                "range": {
+                  "sale_price": {
+                    "gt": 500000
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show transactions in 'Downtown' area last year.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "match": {
+                  "location": "Downtown"
+                }
+              },
+              "filter": {
+                "range": {
+                  "sale_date": {
+                    "gte": "2022-01-01",
+                    "lte": "2022-12-31"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find properties sold by seller 4321.",
+        "query": {
+          "query": {
+            "term": {
+              "seller_id": "4321"
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List all transactions for residential properties over $500,000.",
+        "query": {
+          "query": {
+            "bool": {
+              "filter": [
+                {
+                  "term": {
+                    "property_type": "residential"
+                  }
+                },
+                {
+                  "range": {
+                    "sale_price": {
+                      "gt": 500000
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Gaming Community Posts",
+    "mapping": {
+      "properties": {
+        "post_id": {
+          "type": "keyword"
+        },
+        "author": {
+          "type": "text"
+        },
+        "content": {
+          "type": "text"
+        },
+        "post_date": {
+          "type": "date"
+        },
+        "game_tags": {
+          "type": "keyword"
+        },
+        "likes": {
+          "type": "integer"
+        },
+        "comments": {
+          "type": "nested",
+          "properties": {
+            "comment_id": {
+              "type": "keyword"
+            },
+            "comment_author": {
+              "type": "text"
+            },
+            "comment_content": {
+              "type": "text"
+            },
+            "comment_date": {
+              "type": "date"
+            }
+          }
+        }
+      },
+      "_meta": "Gaming Community Posts"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find all posts tagged 'MMORPG' with more than 100 likes.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "game_tags": "MMORPG"
+                }
+              },
+              "filter": {
+                "range": {
+                  "likes": {
+                    "gt": 100
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show posts related to 'Cyberpunk' from the last month.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "match": {
+                  "content": "Cyberpunk"
+                }
+              },
+              "filter": {
+                "range": {
+                  "post_date": {
+                    "gte": "now-1M/M"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Marketplace Listings",
+    "mapping": {
+      "properties": {
+        "listing_id": {
+          "type": "keyword"
+        },
+        "seller_id": {
+          "type": "keyword"
+        },
+        "item_name": {
+          "type": "text"
+        },
+        "description": {
+          "type": "text"
+        },
+        "price": {
+          "type": "double"
+        },
+        "category": {
+          "type": "keyword"
+        },
+        "listing_date": {
+          "type": "date"
+        },
+        "sold": {
+          "type": "boolean"
+        }
+      },
+      "_meta": "Marketplace Listings"
+    },
+    "NLQs": [
+      {
+        "NLQ": "List all unsold 'antique' items under $200.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "category": "antique"
+                }
+              },
+              "filter": [
+                {
+                  "range": {
+                    "price": {
+                      "lte": 200
+                    }
+                  }
+                },
+                {
+                  "term": {
+                    "sold": false
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find recently listed 'vintage watches'.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "match": {
+                  "item_name": "vintage watches"
+                }
+              },
+              "filter": {
+                "range": {
+                  "listing_date": {
+                    "gte": "now-7d/d"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Public Transport Schedules",
+    "mapping": {
+      "properties": {
+        "schedule_id": {
+          "type": "keyword"
+        },
+        "route_number": {
+          "type": "keyword"
+        },
+        "start_point": {
+          "type": "text"
+        },
+        "end_point": {
+          "type": "text"
+        },
+        "departure_times": {
+          "type": "date"
+        },
+        "arrival_times": {
+          "type": "date"
+        },
+        "frequency_minutes": {
+          "type": "integer"
+        }
+      },
+      "_meta": "Public Transport Schedules"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Show the schedule for route 10 this week.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "route_number": "10"
+                }
+              },
+              "filter": [
+                {
+                  "range": {
+                    "departure_times": {
+                      "gte": "now/w",
+                      "lte": "now/w+1w"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find routes with departure times early in the morning.",
+        "query": {
+          "query": {
+            "bool": {
+              "filter": {
+                "script": {
+                  "script": {
+                    "source": "doc['departure_times'].value.getHour() < 6",
+                    "lang": "painless"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Subscription Services",
+    "mapping": {
+      "properties": {
+        "subscription_id": {
+          "type": "keyword"
+        },
+        "user_id": {
+          "type": "keyword"
+        },
+        "service_name": {
+          "type": "text"
+        },
+        "start_date": {
+          "type": "date"
+        },
+        "end_date": {
+          "type": "date"
+        },
+        "status": {
+          "type": "keyword"
+        },
+        "monthly_fee": {
+          "type": "double"
+        }
+      },
+      "_meta": "Subscription Services"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find all active subscriptions.",
+        "query": {
+          "query": {
+            "term": {
+              "status": "active"
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List subscriptions expiring next month.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "status": "active"
+                }
+              },
+              "filter": {
+                "range": {
+                  "end_date": {
+                    "gte": "now+1M/M",
+                    "lte": "now+2M/M"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show subscriptions with a monthly fee over $10.",
+        "query": {
+          "query": {
+            "range": {
+              "monthly_fee": {
+                "gt": 10
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Travel Itineraries",
+    "mapping": {
+      "properties": {
+        "itinerary_id": {
+          "type": "keyword"
+        },
+        "traveler_id": {
+          "type": "keyword"
+        },
+        "destinations": {
+          "type": "keyword"
+        },
+        "departure_date": {
+          "type": "date"
+        },
+        "return_date": {
+          "type": "date"
+        },
+        "booking_status": {
+          "type": "keyword"
+        },
+        "total_cost": {
+          "type": "double"
+        }
+      },
+      "_meta": "Travel Itineraries"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find upcoming itineraries for traveler 12345.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "traveler_id": "12345"
+                }
+              },
+              "filter": {
+                "range": {
+                  "departure_date": {
+                    "gte": "now/d"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List itineraries to 'Japan' booked this year.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "destinations": "Japan"
+                }
+              },
+              "filter": {
+                "range": {
+                  "departure_date": {
+                    "gte": "2023-01-01"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Online Courses",
+    "mapping": {
+      "properties": {
+        "course_id": {
+          "type": "keyword"
+        },
+        "title": {
+          "type": "text"
+        },
+        "instructor": {
+          "type": "text"
+        },
+        "category": {
+          "type": "keyword"
+        },
+        "published_date": {
+          "type": "date"
+        },
+        "enrollment_count": {
+          "type": "integer"
+        },
+        "rating": {
+          "type": "double"
+        }
+      },
+      "_meta": "Online Courses"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Show courses in 'Data Science' with high enrollment.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "category": "Data Science"
+                }
+              },
+              "filter": {
+                "range": {
+                  "enrollment_count": {
+                    "gt": 500
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List all courses published by 'Dr. Jane Doe'.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "match": {
+                  "instructor": "Dr. Jane Doe"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find courses with a rating above 4.5.",
+        "query": {
+          "query": {
+            "range": {
+              "rating": {
+                "gt": 4.5
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Healthcare Appointments",
+    "mapping": {
+      "properties": {
+        "appointment_id": {
+          "type": "keyword"
+        },
+        "patient_id": {
+          "type": "keyword"
+        },
+        "doctor_id": {
+          "type": "keyword"
+        },
+        "appointment_date": {
+          "type": "date"
+        },
+        "type": {
+          "type": "keyword"
+        },
+        "status": {
+          "type": "keyword"
+        }
+      },
+      "_meta": "Healthcare Appointments"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Show upcoming appointments with Dr. Smith.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "doctor_id": "Dr. Smith"
+                }
+              },
+              "filter": {
+                "range": {
+                  "appointment_date": {
+                    "gte": "now/d"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List all cancelled appointments.",
+        "query": {
+          "query": {
+            "term": {
+              "status": "cancelled"
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find next available check-up appointments.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "type": "check-up"
+                }
+              },
+              "filter": {
+                "range": {
+                  "appointment_date": {
+                    "gte": "now/d"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Employee Attendance",
+    "mapping": {
+      "properties": {
+        "record_id": {
+          "type": "keyword"
+        },
+        "employee_id": {
+          "type": "keyword"
+        },
+        "date": {
+          "type": "date"
+        },
+        "status": {
+          "type": "keyword"
+        },
+        "notes": {
+          "type": "text"
+        }
+      },
+      "_meta": "Employee Attendance"
+    },
+    "NLQs": [
+      {
+        "NLQ": "List attendance records for employee 4567 this month.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "employee_id": "4567"
+                }
+              },
+              "filter": {
+                "range": {
+                  "date": {
+                    "gte": "now/M",
+                    "lte": "now/M+1M"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show all absent records last week.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "status": "absent"
+                }
+              },
+              "filter": {
+                "range": {
+                  "date": {
+                    "gte": "now-1w",
+                    "lte": "now"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "E-commerce Customer Feedback",
+    "mapping": {
+      "properties": {
+        "feedback_id": {
+          "type": "keyword"
+        },
+        "customer_id": {
+          "type": "keyword"
+        },
+        "order_id": {
+          "type": "keyword"
+        },
+        "date": {
+          "type": "date"
+        },
+        "rating": {
+          "type": "integer"
+        },
+        "comment": {
+          "type": "text"
+        }
+      },
+      "_meta": "E-commerce Customer Feedback"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find all feedback with a rating of 5 stars.",
+        "query": {
+          "query": {
+            "term": {
+              "rating": 5
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show negative feedback from the past month.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "range": {
+                  "rating": {
+                    "lte": 2
+                  }
+                }
+              },
+              "filter": {
+                "range": {
+                  "date": {
+                    "gte": "now-1M/M"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List all feedback for order 1234.",
+        "query": {
+          "query": {
+            "term": {
+              "order_id": "1234"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Bookstore Inventory",
+    "mapping": {
+      "properties": {
+        "book_id": {
+          "type": "keyword"
+        },
+        "title": {
+          "type": "text"
+        },
+        "author": {
+          "type": "text"
+        },
+        "genre": {
+          "type": "keyword"
+        },
+        "publication_year": {
+          "type": "date"
+        },
+        "price": {
+          "type": "double"
+        },
+        "stock_quantity": {
+          "type": "integer"
+        }
+      },
+      "_meta": "Bookstore Inventory"
+    },
+    "NLQs": [
+      {
+        "NLQ": "List all science fiction books published after 2010.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "genre": "science fiction"
+                }
+              },
+              "filter": {
+                "range": {
+                  "publication_year": {
+                    "gte": "2010-01-01"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find books by 'George Orwell'.",
+        "query": {
+          "query": {
+            "match": {
+              "author": "George Orwell"
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show books under $20.",
+        "query": {
+          "query": {
+            "range": {
+              "price": {
+                "lte": 20
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Restaurant Reviews",
+    "mapping": {
+      "properties": {
+        "review_id": {
+          "type": "keyword"
+        },
+        "restaurant_id": {
+          "type": "keyword"
+        },
+        "reviewer_name": {
+          "type": "text"
+        },
+        "rating": {
+          "type": "integer"
+        },
+        "comment": {
+          "type": "text"
+        },
+        "visit_date": {
+          "type": "date"
+        }
+      },
+      "_meta": "Restaurant Reviews"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find all reviews with a rating of 5 for restaurant 123.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "restaurant_id": "123"
+                }
+              },
+              "filter": {
+                "term": {
+                  "rating": 5
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show recent reviews from the last month.",
+        "query": {
+          "query": {
+            "range": {
+              "visit_date": {
+                "gte": "now-1M/M"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Job Postings",
+    "mapping": {
+      "properties": {
+        "job_id": {
+          "type": "keyword"
+        },
+        "title": {
+          "type": "text"
+        },
+        "description": {
+          "type": "text"
+        },
+        "location": {
+          "type": "keyword"
+        },
+        "company": {
+          "type": "text"
+        },
+        "posted_date": {
+          "type": "date"
+        },
+        "application_deadline": {
+          "type": "date"
+        }
+      },
+      "_meta": "Job Postings"
+    },
+    "NLQs": [
+      {
+        "NLQ": "List all remote job postings in the tech industry.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "match": {
+                  "description": "tech"
+                }
+              },
+              "filter": {
+                "term": {
+                  "location": "remote"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find job postings by 'Acme Corp'.",
+        "query": {
+          "query": {
+            "match": {
+              "company": "Acme Corp"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Flight Bookings",
+    "mapping": {
+      "properties": {
+        "booking_id": {
+          "type": "keyword"
+        },
+        "customer_id": {
+          "type": "keyword"
+        },
+        "flight_number": {
+          "type": "keyword"
+        },
+        "departure_airport": {
+          "type": "keyword"
+        },
+        "arrival_airport": {
+          "type": "keyword"
+        },
+        "departure_time": {
+          "type": "date"
+        },
+        "arrival_time": {
+          "type": "date"
+        },
+        "price": {
+          "type": "double"
+        },
+        "status": {
+          "type": "keyword"
+        }
+      },
+      "_meta": "Flight Bookings"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Show all upcoming flights from JFK to LAX.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": [
+                {
+                  "term": {
+                    "departure_airport": "JFK"
+                  }
+                },
+                {
+                  "term": {
+                    "arrival_airport": "LAX"
+                  }
+                }
+              ],
+              "filter": {
+                "range": {
+                  "departure_time": {
+                    "gte": "now/d"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find cancelled flight bookings.",
+        "query": {
+          "query": {
+            "term": {
+              "status": "cancelled"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Online Retail Transactions",
+    "mapping": {
+      "properties": {
+        "transaction_id": {
+          "type": "keyword"
+        },
+        "customer_id": {
+          "type": "keyword"
+        },
+        "product_ids": {
+          "type": "keyword"
+        },
+        "transaction_date": {
+          "type": "date"
+        },
+        "total_amount": {
+          "type": "double"
+        },
+        "payment_method": {
+          "type": "keyword"
+        },
+        "status": {
+          "type": "keyword"
+        }
+      },
+      "_meta": "Online Retail Transactions"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Show completed transactions over $500.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "status": "completed"
+                }
+              },
+              "filter": {
+                "range": {
+                  "total_amount": {
+                    "gt": 500
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List all PayPal transactions this month.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "payment_method": "PayPal"
+                }
+              },
+              "filter": {
+                "range": {
+                  "transaction_date": {
+                    "gte": "now/M",
+                    "lte": "now/M+1M"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Social Media Engagement",
+    "mapping": {
+      "properties": {
+        "post_id": {
+          "type": "keyword"
+        },
+        "author_id": {
+          "type": "keyword"
+        },
+        "content": {
+          "type": "text"
+        },
+        "posted_date": {
+          "type": "date"
+        },
+        "likes": {
+          "type": "integer"
+        },
+        "comments": {
+          "type": "nested",
+          "properties": {
+            "comment_id": {
+              "type": "keyword"
+            },
+            "commenter_id": {
+              "type": "keyword"
+            },
+            "comment_text": {
+              "type": "text"
+            },
+            "comment_date": {
+              "type": "date"
+            }
+          }
+        },
+        "tags": {
+          "type": "keyword"
+        }
+      },
+      "_meta": "Social Media Engagement"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find posts with more than 100 likes.",
+        "query": {
+          "query": {
+            "range": {
+              "likes": {
+                "gt": 100
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show posts tagged with 'travel' from the last week.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "tags": "travel"
+                }
+              },
+              "filter": {
+                "range": {
+                  "posted_date": {
+                    "gte": "now-7d/d"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Vehicle Maintenance Records",
+    "mapping": {
+      "properties": {
+        "record_id": {
+          "type": "keyword"
+        },
+        "vehicle_id": {
+          "type": "keyword"
+        },
+        "service_date": {
+          "type": "date"
+        },
+        "service_type": {
+          "type": "keyword"
+        },
+        "description": {
+          "type": "text"
+        },
+        "cost": {
+          "type": "double"
+        }
+      },
+      "_meta": "Vehicle Maintenance Records"
+    },
+    "NLQs": [
+      {
+        "NLQ": "List all maintenance for vehicle ID 1234 in the past year.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "vehicle_id": "1234"
+                }
+              },
+              "filter": {
+                "range": {
+                  "service_date": {
+                    "gte": "now-1y/y"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find all oil change records.",
+        "query": {
+          "query": {
+            "term": {
+              "service_type": "oil change"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Academic Course Registrations",
+    "mapping": {
+      "properties": {
+        "registration_id": {
+          "type": "keyword"
+        },
+        "student_id": {
+          "type": "keyword"
+        },
+        "course_id": {
+          "type": "keyword"
+        },
+        "registration_date": {
+          "type": "date"
+        },
+        "status": {
+          "type": "keyword"
+        }
+      },
+      "_meta": "Academic Course Registrations"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Show registrations for course ID 5678.",
+        "query": {
+          "query": {
+            "term": {
+              "course_id": "5678"
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List all pending registrations.",
+        "query": {
+          "query": {
+            "term": {
+              "status": "pending"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Online Retail Transactions",
+    "mapping": {
+      "properties": {
+        "transaction_id": {
+          "type": "keyword"
+        },
+        "customer_id": {
+          "type": "keyword"
+        },
+        "product_ids": {
+          "type": "keyword"
+        },
+        "transaction_date": {
+          "type": "date"
+        },
+        "total_amount": {
+          "type": "double"
+        },
+        "payment_method": {
+          "type": "keyword"
+        },
+        "status": {
+          "type": "keyword"
+        }
+      },
+      "_meta": "Online Retail Transactions"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Show completed transactions over $500.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "status": "completed"
+                }
+              },
+              "filter": {
+                "range": {
+                  "total_amount": {
+                    "gt": 500
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List all PayPal transactions this month.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "payment_method": "PayPal"
+                }
+              },
+              "filter": {
+                "range": {
+                  "transaction_date": {
+                    "gte": "now/M",
+                    "lte": "now/M+1M"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Social Media Engagement",
+    "mapping": {
+      "properties": {
+        "post_id": {
+          "type": "keyword"
+        },
+        "author_id": {
+          "type": "keyword"
+        },
+        "content": {
+          "type": "text"
+        },
+        "posted_date": {
+          "type": "date"
+        },
+        "likes": {
+          "type": "integer"
+        },
+        "comments": {
+          "type": "nested",
+          "properties": {
+            "comment_id": {
+              "type": "keyword"
+            },
+            "commenter_id": {
+              "type": "keyword"
+            },
+            "comment_text": {
+              "type": "text"
+            },
+            "comment_date": {
+              "type": "date"
+            }
+          }
+        },
+        "tags": {
+          "type": "keyword"
+        }
+      },
+      "_meta": "Social Media Engagement"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find posts with more than 100 likes.",
+        "query": {
+          "query": {
+            "range": {
+              "likes": {
+                "gt": 100
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show posts tagged with 'travel' from the last week.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "tags": "travel"
+                }
+              },
+              "filter": {
+                "range": {
+                  "posted_date": {
+                    "gte": "now-7d/d"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Vehicle Maintenance Records",
+    "mapping": {
+      "properties": {
+        "record_id": {
+          "type": "keyword"
+        },
+        "vehicle_id": {
+          "type": "keyword"
+        },
+        "service_date": {
+          "type": "date"
+        },
+        "service_type": {
+          "type": "keyword"
+        },
+        "description": {
+          "type": "text"
+        },
+        "cost": {
+          "type": "double"
+        }
+      },
+      "_meta": "Vehicle Maintenance Records"
+    },
+    "NLQs": [
+      {
+        "NLQ": "List all maintenance for vehicle ID 1234 in the past year.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "vehicle_id": "1234"
+                }
+              },
+              "filter": {
+                "range": {
+                  "service_date": {
+                    "gte": "now-1y/y"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find all oil change records.",
+        "query": {
+          "query": {
+            "term": {
+              "service_type": "oil change"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Academic Course Registrations",
+    "mapping": {
+      "properties": {
+        "registration_id": {
+          "type": "keyword"
+        },
+        "student_id": {
+          "type": "keyword"
+        },
+        "course_id": {
+          "type": "keyword"
+        },
+        "registration_date": {
+          "type": "date"
+        },
+        "status": {
+          "type": "keyword"
+        }
+      },
+      "_meta": "Academic Course Registrations"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Show registrations for course ID 5678.",
+        "query": {
+          "query": {
+            "term": {
+              "course_id": "5678"
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List all pending registrations.",
+        "query": {
+          "query": {
+            "term": {
+              "status": "pending"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Fitness Activity Tracking",
+    "mapping": {
+      "properties": {
+        "activity_id": {
+          "type": "keyword"
+        },
+        "user_id": {
+          "type": "keyword"
+        },
+        "activity_type": {
+          "type": "keyword"
+        },
+        "duration_minutes": {
+          "type": "integer"
+        },
+        "calories_burned": {
+          "type": "double"
+        },
+        "activity_date": {
+          "type": "date"
+        }
+      },
+      "_meta": "Fitness Activity Tracking"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Show all running activities longer than 30 minutes.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "activity_type": "running"
+                }
+              },
+              "filter": {
+                "range": {
+                  "duration_minutes": {
+                    "gt": 30
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find activities with more than 500 calories burned last week.",
+        "query": {
+          "query": {
+            "bool": {
+              "filter": [
+                {
+                  "range": {
+                    "calories_burned": {
+                      "gt": 500
+                    }
+                  }
+                },
+                {
+                  "range": {
+                    "activity_date": {
+                      "gte": "now-7d/d",
+                      "lte": "now/d"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Public Library Catalog",
+    "mapping": {
+      "properties": {
+        "book_id": {
+          "type": "keyword"
+        },
+        "title": {
+          "type": "text"
+        },
+        "author": {
+          "type": "text"
+        },
+        "publication_year": {
+          "type": "integer"
+        },
+        "genres": {
+          "type": "keyword"
+        },
+        "availability": {
+          "type": "boolean"
+        }
+      },
+      "_meta": "Public Library Catalog"
+    },
+    "NLQs": [
+      {
+        "NLQ": "List all available novels by 'Margaret Atwood'.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": [
+                {
+                  "match": {
+                    "author": "Margaret Atwood"
+                  }
+                },
+                {
+                  "term": {
+                    "genres": "novel"
+                  }
+                }
+              ],
+              "filter": {
+                "term": {
+                  "availability": true
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show books published before 1980.",
+        "query": {
+          "query": {
+            "range": {
+              "publication_year": {
+                "lt": 1980
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Customer Service Inquiries",
+    "mapping": {
+      "properties": {
+        "inquiry_id": {
+          "type": "keyword"
+        },
+        "customer_id": {
+          "type": "keyword"
+        },
+        "inquiry_date": {
+          "type": "date"
+        },
+        "category": {
+          "type": "keyword"
+        },
+        "status": {
+          "type": "keyword"
+        },
+        "resolution_date": {
+          "type": "date"
+        }
+      },
+      "_meta": "Customer Service Inquiries"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find unresolved inquiries in the 'billing' category.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "category": "billing"
+                }
+              },
+              "must_not": {
+                "term": {
+                  "status": "resolved"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List all inquiries resolved within the last month.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "status": "resolved"
+                }
+              },
+              "filter": {
+                "range": {
+                  "resolution_date": {
+                    "gte": "now-1M/M"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Real Estate Listings",
+    "mapping": {
+      "properties": {
+        "listing_id": {
+          "type": "keyword"
+        },
+        "address": {
+          "type": "text"
+        },
+        "listing_date": {
+          "type": "date"
+        },
+        "price": {
+          "type": "double"
+        },
+        "bedrooms": {
+          "type": "integer"
+        },
+        "bathrooms": {
+          "type": "integer"
+        },
+        "square_feet": {
+          "type": "integer"
+        },
+        "status": {
+          "type": "keyword"
+        }
+      },
+      "_meta": "Real Estate Listings"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Show newly listed properties under $300,000.",
+        "query": {
+          "query": {
+            "bool": {
+              "filter": [
+                {
+                  "range": {
+                    "price": {
+                      "lte": 300000
+                    }
+                  }
+                },
+                {
+                  "range": {
+                    "listing_date": {
+                      "gte": "now-30d/d"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List all properties with at least 4 bedrooms.",
+        "query": {
+          "query": {
+            "range": {
+              "bedrooms": {
+                "gte": 4
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Pet Adoption Records",
+    "mapping": {
+      "properties": {
+        "record_id": {
+          "type": "keyword"
+        },
+        "pet_name": {
+          "type": "text"
+        },
+        "species": {
+          "type": "keyword"
+        },
+        "breed": {
+          "type": "text"
+        },
+        "age_years": {
+          "type": "integer"
+        },
+        "adoption_date": {
+          "type": "date"
+        },
+        "status": {
+          "type": "keyword"
+        }
+      },
+      "_meta": "Pet Adoption Records"
+    },
+    "NLQs": [
+      {
+        "NLQ": "List all adopted dogs.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "species": "dog"
+                }
+              },
+              "filter": {
+                "term": {
+                  "status": "adopted"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find pets adopted in the last month.",
+        "query": {
+          "query": {
+            "range": {
+              "adoption_date": {
+                "gte": "now-1M/M"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Vehicle Rental Agreements",
+    "mapping": {
+      "properties": {
+        "agreement_id": {
+          "type": "keyword"
+        },
+        "customer_id": {
+          "type": "keyword"
+        },
+        "vehicle_id": {
+          "type": "keyword"
+        },
+        "start_date": {
+          "type": "date"
+        },
+        "end_date": {
+          "type": "date"
+        },
+        "daily_rate": {
+          "type": "double"
+        },
+        "total_cost": {
+          "type": "double"
+        },
+        "status": {
+          "type": "keyword"
+        }
+      },
+      "_meta": "Vehicle Rental Agreements"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Show active rentals over $300.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "status": "active"
+                }
+              },
+              "filter": {
+                "range": {
+                  "total_cost": {
+                    "gt": 300
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List all rentals starting next week.",
+        "query": {
+          "query": {
+            "range": {
+              "start_date": {
+                "gte": "now+1w/w",
+                "lte": "now+2w/w"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Online Course Enrollments",
+    "mapping": {
+      "properties": {
+        "enrollment_id": {
+          "type": "keyword"
+        },
+        "course_id": {
+          "type": "keyword"
+        },
+        "student_id": {
+          "type": "keyword"
+        },
+        "enrollment_date": {
+          "type": "date"
+        },
+        "completion_date": {
+          "type": "date"
+        },
+        "status": {
+          "type": "keyword"
+        },
+        "final_grade": {
+          "type": "keyword"
+        }
+      },
+      "_meta": "Online Course Enrollments"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find completed courses with grade 'A'.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "status": "completed"
+                }
+              },
+              "filter": {
+                "term": {
+                  "final_grade": "A"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List enrollments from the past year.",
+        "query": {
+          "query": {
+            "range": {
+              "enrollment_date": {
+                "gte": "now-1y/y"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Public Event Registrations",
+    "mapping": {
+      "properties": {
+        "registration_id": {
+          "type": "keyword"
+        },
+        "event_id": {
+          "type": "keyword"
+        },
+        "attendee_id": {
+          "type": "keyword"
+        },
+        "registration_date": {
+          "type": "date"
+        },
+        "status": {
+          "type": "keyword"
+        }
+      },
+      "_meta": "Public Event Registrations"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Show registrations for event 4567.",
+        "query": {
+          "query": {
+            "term": {
+              "event_id": "4567"
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find all cancelled event registrations.",
+        "query": {
+          "query": {
+            "term": {
+              "status": "cancelled"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Pet Adoption",
+    "mapping": {
+      "_meta": {
+        "description": "Pet Adoption Records",
+        "version": "1.0"
+      },
+      "properties": {
+        "record_id": {
+          "type": "keyword"
+        },
+        "pet_name": {
+          "type": "text"
+        },
+        "species": {
+          "type": "keyword"
+        },
+        "breed": {
+          "type": "text"
+        },
+        "age_years": {
+          "type": "integer"
+        },
+        "adoption_date": {
+          "type": "date"
+        },
+        "status": {
+          "type": "keyword"
+        }
+      }
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find all adopted cats.",
+        "query": {
+          "bool": {
+            "must": {
+              "match": {
+                "species": "cat"
+              }
+            },
+            "filter": {
+              "term": {
+                "status": "adopted"
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List pets adopted in the last year.",
+        "query": {
+          "range": {
+            "adoption_date": {
+              "gte": "now-1y/y"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Online Retail",
+    "mapping": {
+      "_meta": {
+        "description": "Online Retail Transactions",
+        "version": "1.0"
+      },
+      "properties": {
+        "transaction_id": {
+          "type": "keyword"
+        },
+        "customer_id": {
+          "type": "keyword"
+        },
+        "product_ids": {
+          "type": "keyword"
+        },
+        "transaction_date": {
+          "type": "date"
+        },
+        "total_amount": {
+          "type": "double"
+        },
+        "payment_method": {
+          "type": "keyword"
+        },
+        "status": {
+          "type": "keyword"
+        }
+      }
+    },
+    "NLQs": [
+      {
+        "NLQ": "Show transactions paid by credit card.",
+        "query": {
+          "bool": {
+            "must": {
+              "match": {
+                "payment_method": "credit card"
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find transactions over $1000.",
+        "query": {
+          "range": {
+            "total_amount": {
+              "gt": 1000
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Employee Attendance",
+    "mapping": {
+      "_meta": {
+        "description": "Employee Attendance Records",
+        "version": "1.0"
+      },
+      "properties": {
+        "employee_id": {
+          "type": "keyword"
+        },
+        "date": {
+          "type": "date"
+        },
+        "status": {
+          "type": "keyword"
+        },
+        "notes": {
+          "type": "text"
+        }
+      }
+    },
+    "NLQs": [
+      {
+        "NLQ": "List all absences this month.",
+        "query": {
+          "bool": {
+            "must": {
+              "match": {
+                "status": "absent"
+              }
+            },
+            "filter": {
+              "range": {
+                "date": {
+                  "gte": "now/M",
+                  "lte": "now/M+1M"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show late arrivals last week.",
+        "query": {
+          "bool": {
+            "must": {
+              "match": {
+                "status": "late"
+              }
+            },
+            "filter": {
+              "range": {
+                "date": {
+                  "gte": "now-1w/w",
+                  "lte": "now/w"
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+]

@@ -1,5 +1,6 @@
 import json
 import re
+import sys
 
 def extract_json(text):
     """
@@ -25,3 +26,16 @@ def extract_json(text):
             print(f"Error decoding JSON: {e}")
     
     return json_objects
+
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print("Usage: extract_json.py <file>")
+        sys.exit(1)
+
+    filename = sys.argv[1]
+    with open(filename, 'r', encoding='utf-8') as file:
+        text = file.read()
+        objs = extract_json(text)
+        with open('output.json', 'w') as f:
+            json.dump(objs, f, indent=2)

@@ -1,4 +1,3 @@
-#FROM openhermes
 FROM llama2
 
 # set the temperature to 1 [higher is more creative, lower is more coherent]
@@ -19,22 +18,22 @@ The synthetic data will be used to fine-tune an LLMs ability to translate NLQs i
 considering the context provided by the above.
 
 Here is the general template that you will generate by filling in the placeholders inside of the angle brackets:
-```
+```template
 {
   "domain": "<string>",
   "mapping": {
     "properties": {
-      "<field name>": { "type": "<json type>", "description": "<string>" },
+      "<field_name>": { "type": "<json type>", "description": "<string>" },
       ...
     },
-    "_meta": { <json object> }
+    "_meta": <json_object>
   },
   "NLQs": [
     {
       "NLQ": "<string>",
       "query": {
         "query": {
-          "<json object corresponding to NLQ>": {}
+          "<json_object_for_NLQ>": {}
         }
       }
     },
@@ -42,61 +41,5 @@ Here is the general template that you will generate by filling in the placeholde
   ]
 }
 ```
-
-Here is an example of the JSON you might generate: 
-```json
-{
-  "domain": "Online Retail",
-  "mapping": {
-    "properties": {
-      "product_id": { "type": "keyword", "description": "Unique identifier for each product." },
-      "name": { "type": "text", "description": "Name of the product." },
-      "price": { "type": "double", "description": "Price of the product." },
-      "in_stock": { "type": "boolean", "description": "Availability status of the product." }
-    },
-    "_meta": "This mapping allows for filtering products by name, availability, and prices (like ranges) in search queries."  }
-  },
-  "NLQs": [
-    {
-      "NLQ": "Find all available electronics under $100.",
-      "query": {
-        "query": {
-          "bool": {
-            "must": [
-              { "term": { "category": "electronics" } },
-              { "range": { "price": { "lte": 100 } } }
-            ],
-            "filter": { "term": { "in_stock": true } }
-          }
-        }
-      }
-    },
-    {
-      "NLQ": "List products out of stock.",
-      "query": {
-        "query": {
-          "bool": {
-            "must_not": {
-              "term": { "in_stock": true }
-            }
-          }
-        }
-      }
-    },
-    {
-      "NLQ": "Show expensive products in the 'luxury items' category.",
-      "query": {
-        "query": {
-          "bool": {
-            "must": { "term": { "category": "luxury items" } },
-            "filter": { "range": { "price": { "gt": 1000 } } }
-          }
-        }
-      }
-    }
-  ]
-}
-```
-
 Generate valid JSON that follows the general pattern of the example. Vary the domain, the mapping, and the NLQs, as we seek a lot of different kinds of training data for our fine-tuning process.
 """

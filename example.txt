@@ -1,0 +1,220 @@
+Here are some examples:
+```json
+[
+  {
+    "domain": "E-commerce Customer Feedback",
+    "mapping": {
+      "properties": {
+        "feedback_id": {
+          "type": "keyword"
+        },
+        "customer_id": {
+          "type": "keyword"
+        },
+        "order_id": {
+          "type": "keyword"
+        },
+        "date": {
+          "type": "date"
+        },
+        "rating": {
+          "type": "integer"
+        },
+        "comment": {
+          "type": "text"
+        }
+      },
+      "_meta": "E-commerce Customer Feedback"
+    },
+    "NLQs": [
+      {
+        "NLQ": "Find all feedback with a rating of 5 stars.",
+        "query": {
+          "query": {
+            "term": {
+              "rating": 5
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Show negative feedback from the past month.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "range": {
+                  "rating": {
+                    "lte": 2
+                  }
+                }
+              },
+              "filter": {
+                "range": {
+                  "date": {
+                    "gte": "now-1M/M"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "List all feedback for order 1234.",
+        "query": {
+          "query": {
+            "term": {
+              "order_id": "1234"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Retail Products",
+    "mapping": {
+      "properties": {
+        "product_id": {
+          "type": "keyword"
+        },
+        "name": {
+          "type": "text"
+        },
+        "category": {
+          "type": "keyword"
+        },
+        "price": {
+          "type": "double"
+        },
+        "stock_quantity": {
+          "type": "integer"
+        },
+        "rating": {
+          "type": "double"
+        },
+        "release_date": {
+          "type": "date"
+        }
+      },
+      "_meta": "Retail Products"
+    },
+    "NLQs": [
+      {
+        "NLQ": "List all electronics with a rating above 4 stars.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "category": "electronics"
+                }
+              },
+              "filter": {
+                "range": {
+                  "rating": {
+                    "gt": 4
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find new arrivals in the kitchen category that are in stock.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "category": "kitchen"
+                }
+              },
+              "filter": [
+                {
+                  "range": {
+                    "release_date": {
+                      "gte": "now-1M/M"
+                    }
+                  }
+                },
+                {
+                  "range": {
+                    "stock_quantity": {
+                      "gt": 0
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "domain": "Vehicle Maintenance Records",
+    "mapping": {
+      "properties": {
+        "record_id": {
+          "type": "keyword"
+        },
+        "vehicle_id": {
+          "type": "keyword"
+        },
+        "service_date": {
+          "type": "date"
+        },
+        "service_type": {
+          "type": "keyword"
+        },
+        "description": {
+          "type": "text"
+        },
+        "cost": {
+          "type": "double"
+        }
+      },
+      "_meta": "Vehicle Maintenance Records"
+    },
+    "NLQs": [
+      {
+        "NLQ": "List all maintenance for vehicle ID 1234 in the past year.",
+        "query": {
+          "query": {
+            "bool": {
+              "must": {
+                "term": {
+                  "vehicle_id": "1234"
+                }
+              },
+              "filter": {
+                "range": {
+                  "service_date": {
+                    "gte": "now-1y/y"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "NLQ": "Find all oil change records.",
+        "query": {
+          "query": {
+            "term": {
+              "service_type": "oil change"
+            }
+          }
+        }
+      }
+    ]
+  }
+]
+```
+Please generate more synthetic data based on these examples.
+Hoewver, feel free to modify the examples as you see fit.
+

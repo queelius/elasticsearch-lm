@@ -1,8 +1,3 @@
-import json
-from data_tool import DataTool
-from extract_json import extract_json
-
-example_text = """
 
 Here is an example of non-JSON stuff.
 
@@ -74,19 +69,36 @@ And finally, here is a valid JSON block.
 ]
 }
 ``` 
-"""
 
-extracted_json_objects = extract_json(example_text)
 
-# Printing extracted JSON objects
-#for obj in extracted_json_objects:
-#    print(json.dumps(obj, indent=2))
+Oh, and here is another example of non-JSON stuff.
+And here is JSON. It's valid again:
 
-# Now let's use validate_data.py to validate the extracted JSON objects
-    
-for obj in extracted_json_objects:
-    data_tool = DataTool()
-    valid = data_tool.validate_entry(obj)
-    print("Valid:" if valid else "Invalid:")
-    print(json.dumps(obj, indent=2))
-    print("*" * 20)
+```json
+{
+  "domain": "Online Retail #2",
+  "mapping": {
+    "properties": {
+      "product_id": { "type": "keyword", "description": "Unique identifier for each product." },
+      "name": { "type": "text", "description": "Name of the product." }
+    },
+    "_meta": "This mapping allows for filtering products by name, availability, and categories in search queries." 
+  },
+  "NLQs": [
+    {
+      "NLQ": "What products are available?",
+      "query": {
+        "match_all": {}
+      }
+    },
+    {
+      "NLQ": "Show me all products with 'apple' in the name.",
+      "query": {
+        "match": {
+          "name": "apple"
+        }
+      }
+    }
+  ]
+}
+```

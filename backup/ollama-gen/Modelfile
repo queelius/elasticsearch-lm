@@ -19,22 +19,22 @@ The synthetic data will be used to fine-tune an LLMs ability to translate NLQs i
 considering the context provided by the above.
 
 Here is the general template that you will generate by filling in the placeholders inside of the angle brackets:
-```template
+```
 {
   "domain": "<string>",
   "mapping": {
     "properties": {
-      "<field_name>": { "type": "<json type>", "description": "<string>" },
+      "<field name>": { "type": "<json type>", "description": "<string>" },
       ...
     },
-    "_meta": <json_object>
+    "_meta": { <json object> }
   },
   "NLQs": [
     {
       "NLQ": "<string>",
       "query": {
         "query": {
-          "<json_object_for_NLQ>": {}
+          "<json object corresponding to NLQ>": {}
         }
       }
     },
@@ -54,7 +54,7 @@ Here is an example of the JSON you might generate:
       "price": { "type": "double", "description": "Price of the product." },
       "in_stock": { "type": "boolean", "description": "Availability status of the product." }
     },
-    "_meta": "This mapping allows for filtering products by name, availability, and prices (like ranges) in search queries."
+    "_meta": "This mapping allows for filtering products by name, availability, and prices (like ranges) in search queries."  }
   },
   "NLQs": [
     {

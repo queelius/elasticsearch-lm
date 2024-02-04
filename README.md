@@ -24,6 +24,10 @@ The foundation of our fine-tuning process involves creating a rich dataset of El
 
 This section details our approach to synthetic data generation, ensuring a broad coverage of query types and complexities.
 
+We actually generated our synthetic data by first sampling from GPT-4, and then using those results to prime an open-source
+model, [llama2](https://llama.meta.com/), to generate more synthetic data that was based on the high-quality examples
+provided by GPT-4. This was done to ensure that the synthetic data was of high quality and covered a wide range of query types and complexities without costing too much in terms of computation resources. See the `synthetic_data_generation` directory for more details.
+
 ### Process
 
 We use the very large and capable GPT-4 model to generate the synthetic data. The process involves three key steps:
@@ -78,7 +82,6 @@ The JSON object for each training example comprises the following key components
 }
 ```
 
-
 ## Inference Time: The System Instruction
 
 At inference time, users and developers are expected to use a `system instruction` that it is similar to the training data. The model will then generate a query that is similar to the `query` field in the training data. For example, in the above example, the system instruction is given by:
@@ -93,9 +96,19 @@ At inference time, users and developers are expected to use a `system instructio
       "field3": { "type": "keyword" }
     }
   },
-  "NLQ": "Example natural language query"
 }
 ```
+
+Then, when the user asks the NLQ "Example natural language query", the program will
+make this the prompt to the LLM, and the model will generate a response that
+it has been fine-tuned to predict according to our synthetic training data.
+
+#### In-Context Learning
+
+There is also an opportunity for in-context learning, where the developers of the system can, given their special domain knowledge of their users and data, provide additional examples of NLQs and their corresponding queries.
+However, since we are assuming computation resources are limited, adding to the context will generally slow down
+the system. This is a tradeoff that the developers will have to make. Indeed, if resources are not that constrained, then
+better results can be achieved by using a larger language model and optionally providing examples for in-context learning.
 
 ### Challenges and Solutions
 
