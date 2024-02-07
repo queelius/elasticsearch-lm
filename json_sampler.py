@@ -25,21 +25,19 @@ def sample_json_objects(file_path, sample_size):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Sample JSON objects from a file.")
-    parser.add_argument("infile", type=str, help="Input file containing a JSON array.")
+    parser.add_argument("in_file", type=str, help="Input file containing a JSON array.")
     parser.add_argument("--sample-size", type=int, default=1, help="Number of objects to sample (default: 1).")
-    parser.add_argument("--outfile", type=str, help="Output file to write sampled objects (optional).")
+    parser.add_argument("--out_file", type=str, help="Output file to write sampled objects (optional).")
 
     args = parser.parse_args()
-
-    # Generate the output filename automatically if not provided
-    if not args.outfile:
-        base, ext = os.path.splitext(args.infile)
-        args.outfile = f"{base}.sample{ext}"
+    if not args.out_file:
+        base, ext = os.path.splitext(args.in_file)
+        args.out_file = f"{base}.sample{ext}"
 
     try:
-        sampled_objects = sample_json_objects(args.infile, args.sample_size)
-        with open(args.outfile, 'w') as file:
+        sampled_objects = sample_json_objects(args.in_file, args.sample_size)
+        with open(args.out_file, 'w') as file:
             json.dump(sampled_objects, file, indent=2)
-        print(f"Sampled {args.sample_size} objects written to {args.outfile}")
+        print(f"Sampled {args.sample_size} objects written to {args.out_file}")
     except Exception as e:
         print(f"Error: {e}")

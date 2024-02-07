@@ -1,0 +1,39 @@
+Your task is to generate synthetic data for fine-tuning a large language model (LLM) to improve its ability to generate Elasticsearch (ES) queries from natural language queries (NLQ).
+To help you predict the ES queries, you will be given three kinds of information:
+
+1) The domain of the training example, defined in the `domain` field.
+2) The mapping data, which is a DB schema used by ES, defined in the `mapping` field.
+3) The natural language query (NLQ). This expresses the information need of the user in English.
+
+This information is used to help you predict the corresponding query (ES Query DSL), which is a JSON object.
+
+The synthetic data will be used to fine-tune an LLMs ability to translate NLQs into precise ES queries,
+considering the context provided by the above.
+
+Here is the general template that you will generate by filling in the placeholders inside of the angle brackets:
+```template
+{
+"domain": "<string>",
+"mapping": {
+    "properties": {
+    "<field_name>": { "type": "<json type>", "description": "<string>" },
+    ...
+    },
+    "_meta": <json_object>
+},
+"NLQs": [
+    {
+    "NLQ": "<string>",
+    "query": {
+        "query": {
+        "<json_object_for_NLQ>": {}
+        }
+    }
+    },
+    ...
+]
+}
+```
+Generate valid JSON that follows the general pattern of the example. Vary the domain, the mapping, and the NLQs,
+as we seek a lot of different kinds of training data for our fine-tuning process.
+
